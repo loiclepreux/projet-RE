@@ -1,0 +1,954 @@
+/* GLOBAL STYLES */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Bebas Neue", sans-serif;
+    height: 100vh;
+    background-image: url("../img/resident_evil_7.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+}
+
+.header-top {
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.left-logo img,
+.right-logo img {
+    width: 90px;
+    height: auto;
+    filter: drop-shadow(0 0 6px red);
+    animation: logoFade 2s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes logoFade {
+    to {
+        opacity: 1;
+    }
+}
+
+header {
+    background: rgba(0, 0, 0, 0.75);
+    padding: 20px 0 10px 0;
+    border-bottom: 2px solid #a60000;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header-top h1 {
+    flex: 1;
+    text-align: center;
+    font-size: 48px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px red;
+    flex-grow: 1;
+}
+
+nav ul {
+    list-style: none;
+    margin-top: 10px;
+}
+
+nav ul li {
+    display: inline-block;
+    margin: 0 20px;
+}
+
+nav ul li a,
+#auth-nav {
+    color: white;
+    text-decoration: none;
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: 0.3s ease;
+}
+
+nav ul li a:hover,
+#auth-nav:hover {
+    color: red;
+    text-shadow: 0 0 8px red;
+}
+
+main {
+    flex: 1;
+    padding: 20px;
+    margin: 40px auto;
+    width: 80%;
+}
+
+article {
+    background: rgba(0, 0, 0, 0.75);
+    padding: 30px;
+    margin-bottom: 40px;
+    border: 1px solid #a60000;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+    border-radius: 6px;
+    backdrop-filter: blur(6px);
+    transition: 0.3s ease;
+}
+
+article:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+}
+
+article h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    color: white;
+    text-shadow: 0 0 10px red;
+}
+
+article h3 {
+    position: relative;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: white;
+    text-shadow: 0 0 6px red;
+    letter-spacing: 1px;
+    border-left: 4px solid #a60000;
+    padding-left: 10px;
+}
+
+article h3::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: red;
+    box-shadow: 0 0 8px red;
+    animation: scan 2s infinite;
+}
+
+@keyframes scan {
+    0% {
+        width: 0;
+        opacity: 0;
+    }
+    50% {
+        width: 50px;
+        opacity: 1;
+    }
+    100% {
+        width: 0;
+        opacity: 0;
+    }
+}
+
+article p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #ddd;
+}
+
+footer {
+    background: rgba(0, 0, 0, 0.75);
+    color: #ddd;
+    padding: 15px 0;
+    text-align: center;
+    border-top: 1px solid #a60000;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+}
+
+/* overlay */
+.auth-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+/* masqué */
+.hidden {
+    display: none;
+}
+
+/* contenu */
+.auth-modal-content {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 30px;
+    border: 1px solid #a60000;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 25px red;
+    border-radius: 8px;
+    width: 350px;
+    animation: modalFade 0.5s ease-out;
+}
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* X close */
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    cursor: pointer;
+    font-size: 32px;
+    color: red;
+    text-shadow: 0 0 8px red;
+}
+
+.auth-modal input {
+    width: 100%;
+    margin: 6px 0;
+    padding: 10px;
+    background: #111;
+    border: 1px solid #a60000;
+    color: #fff;
+}
+
+.auth-modal button {
+    width: 100%;
+    background: red;
+    border: none;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+.auth-modal button:hover {
+    background: #b00000;
+}
+
+/* PAGES QUIZ */
+
+.quiz-container {
+    width: 95%;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.75);
+    border: 1px solid #a60000;
+    border-radius: 6px;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+    color: #eee;
+    padding-top: 40px;
+}
+
+.clocks-container {
+    width: 100%;
+    position: sticky;
+    top: 30px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 120px;
+    margin-bottom: 20px;
+}
+
+.clocks-left,
+.clocks-right {
+    display: flex;
+    gap: 20px;
+}
+
+.clock-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.clock-label {
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #e2d1d1;
+    text-shadow: 0 0 6px red;
+}
+
+.clock-circle {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #00ff88;
+    border-radius: 50%;
+    background: rgba(0, 15, 0, 0.85);
+    box-shadow: 0 0 16px rgba(0, 255, 140, 0.6), inset 0 0 12px #00ff88;
+
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-shadow: 0 0 6px red;
+    font-family: monospace;
+    position: relative;
+    animation: bioPulse 3s ease-in-out infinite;
+}
+
+.clock-circle::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #00ff88, transparent);
+    animation: scanHorloge 3s linear infinite;
+}
+
+#quiz-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+#loading-video {
+    width: 420px;
+    max-width: 90%;
+    border: 2px solid #a60000;
+    box-shadow: 0 0 25px red;
+    border-radius: 6px;
+}
+
+.loading-text {
+    color: #e60000;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px red;
+    text-transform: uppercase;
+}
+
+.quiz-title {
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.quiz-btn {
+    padding: 12px 24px;
+    background: #a60000;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    margin-top: 15px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.quiz-btn:hover {
+    background: red;
+    box-shadow: 0 0 10px red;
+}
+
+.quiz-header {
+    margin-bottom: 25px;
+}
+
+.quiz-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 6px red;
+    font-size: 18px;
+}
+
+#quiz-difficulty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+#quiz-difficulty h2 {
+    font-size: 26px;
+    letter-spacing: 2px;
+    text-shadow: 0 0 8px red;
+    margin-bottom: 10px;
+}
+
+.difficulty-buttons button {
+    margin: 10px;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    cursor: pointer;
+
+    background: rgba(15, 0, 0, 0.85);
+    border: 1px solid #a60000;
+    color: #eee;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.35);
+    transition: 0.3s ease;
+}
+
+.difficulty-buttons button:hover {
+    background: #a60000;
+    box-shadow: 0 0 18px red;
+    transform: translateY(-2px);
+}
+
+.answers {
+    display: grid;
+    gap: 12px;
+}
+
+.answers button {
+    padding: 12px;
+    margin: 10px 0;
+    width: 100%;
+    background: rgba(20, 20, 20, 0.9);
+    border: 1px solid #a60000;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    border-radius: 4px;
+}
+
+.answer-btn.good {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.answer-btn.bad {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.answers button:hover {
+    background: #640000;
+    box-shadow: 0 0 8px red;
+    opacity: 0.8;
+}
+
+@keyframes scanHorloge {
+    0% {
+        top: 0px;
+    }
+    50% {
+        top: calc(100% - 3px);
+    }
+    100% {
+        top: 0px;
+    }
+}
+
+@keyframes bioPulse {
+    0%,
+    100% {
+        box-shadow: 0 0 12px rgba(0, 255, 150, 0.4),
+            inset 0 0 8px rgba(0, 255, 150, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 18px rgba(0, 255, 150, 0.8),
+            inset 0 0 14px rgba(0, 255, 150, 0.6);
+    }
+}
+
+/* PAGES SCORES */
+
+.score-container {
+    width: 80%;
+    margin: 60px auto;
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.75);
+    border: 1px solid #a60000;
+    border-radius: 6px;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+    color: #eee;
+}
+
+.user-score h1 {
+    font-size: 36px;
+    text-shadow: 0 0 6px red;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.score-info {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 40px;
+    text-shadow: 0 0 4px red;
+}
+
+.leaderboard h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px;
+    text-shadow: 0 0 6px red;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: rgba(160, 0, 0, 0.8);
+    color: #fff;
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 0, 0, 0.3);
+    font-size: 18px;
+}
+
+tbody tr:hover {
+    background: rgba(160, 0, 0, 0.2);
+    transform: scale(1.01);
+    transition: 0.2s ease;
+}
+
+/* PAGES FORUM */
+
+.forum-container {
+    width: 80%;
+    margin: 60px auto;
+    color: #eee;
+    background: rgba(0, 0, 0, 0.75);
+    padding: 30px;
+    border: 1px solid #a60000;
+    border-radius: 6px;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+}
+
+.forum-create h1,
+.forum-list h2 {
+    text-align: center;
+    text-shadow: 0 0 6px red;
+    margin-bottom: 20px;
+}
+
+#topic-title,
+#topic-message {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    background: #111;
+    border: 1px solid #a60000;
+    color: #fff;
+    border-radius: 4px;
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+#create-topic {
+    background: #a60000;
+    color: #fff;
+    padding: 10px 24px;
+    border: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#create-topic:hover {
+    background: red;
+    box-shadow: 0 0 12px red;
+}
+
+.forum-topic {
+    background: rgba(40, 40, 40, 0.8);
+    border: 1px solid #a60000;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    transition: 0.2s ease;
+    cursor: pointer;
+}
+
+.forum-topic:hover {
+    background: rgba(160, 0, 0, 0.2);
+    transform: scale(1.01);
+}
+
+.topic-meta {
+    font-size: 14px;
+    color: #aaa;
+    margin-top: 8px;
+}
+
+/* PAGES CONTACT */
+
+.contact-container {
+    width: 60%;
+    margin: 60px auto;
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.75);
+    border: 1px solid #a60000;
+    border-radius: 6px;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+    text-align: center;
+    color: #eee;
+}
+
+.contact-container h1 {
+    text-shadow: 0 0 8px red;
+    margin-bottom: 10px;
+}
+
+.contact-container p {
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+#contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#contact-name,
+#contact-email,
+#contact-message {
+    padding: 12px;
+    border: 1px solid #a60000;
+    background: #111;
+    color: white;
+    border-radius: 4px;
+}
+
+#contact-message {
+    min-height: 150px;
+    resize: vertical;
+}
+
+#contact-submit {
+    background: #a60000;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    cursor: pointer;
+    font-size: 20px;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+#contact-submit:hover {
+    background: red;
+    box-shadow: 0 0 10px red;
+}
+
+.feedback {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 0 6px red;
+}
+
+.quiz-screen .hidden {
+    display: none;
+}
+
+/* PAGES MEMORY */
+
+.memory-container {
+    width: 95%;
+    max-width: 1450px;
+    margin: 40px auto;
+    padding: 40px 20px;
+    background: rgba(0, 0, 0, 0.75);
+    border: 1px solid #a60000;
+    border-radius: 6px;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    color: #eee;
+    text-align: center;
+}
+
+.memory-title {
+    font-size: 2.4rem;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 0 12px red;
+}
+
+#memory-start {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+
+.memory-difficulty {
+    display: flex;
+    gap: 20px;
+}
+
+.memory-difficulty button {
+    padding: 14px 32px;
+    font-size: 1.1rem;
+    background: #160000;
+    border: 1px solid #a60000;
+    color: #fff;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 4px;
+    box-shadow: inset 0 0 8px red, 0 0 10px rgba(255,0,0,.6);
+    transition: .3s;
+}
+
+.memory-difficulty button:hover {
+    background: #a60000;
+    box-shadow: 0 0 18px red;
+}
+
+.memory-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+    text-shadow: 0 0 6px red;
+}
+
+/* =========================
+    GRID
+========================= */
+
+.memory-grid {
+    display: grid;
+    justify-content: center;
+}
+
+/* =========================
+    CARD
+========================= */
+
+.memory-card {
+    width: 80px;
+    height: 120px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+/* Carte interne */
+.memory-card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease;
+}
+
+/* 👉 état retourné (pour plus tard en JS) */
+.memory-card.is-flipped .memory-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Faces */
+.memory-card-front,
+.memory-card-back {
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* FACE AVANT (dos de carte) */
+.memory-card-front {
+    background-color: #000;
+    border: 1px solid #a60000;
+    box-shadow:
+        inset 0 0 16px rgba(255, 0, 0, 0.6),
+        0 0 16px rgba(255, 0, 0, 0.5);
+    position: absolute;
+    z-index: 2;
+    overflow: hidden;
+}
+
+/* Scan effect */
+.memory-card-front::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, red, transparent);
+    top: 0;
+    animation: scanning 5s linear infinite;
+    box-shadow: 0 0 8px red;
+    z-index: 1;
+}
+
+/* FACE ARRIÈRE */
+.memory-card-back {
+    transform: rotateY(180deg);
+    background: rgba(0, 10, 0, 0.9);
+    border: 1px solid #00ff88;
+    box-shadow: inset 0 0 16px rgba(0, 255, 140, 0.7),
+        0 0 16px rgba(0, 255, 140, 0.6);
+        z-index: 1;
+    backface-visibility: hidden;
+}
+
+/* IMAGE */
+.memory-card-back img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 8px;
+    filter: drop-shadow(0 0 6px #00ff88);
+}
+
+.memory-card-front img {
+    position: relative;
+    z-index: 2;
+    width: 70%;
+    height: auto;
+    filter: drop-shadow(0 0 10px red);
+    pointer-events: none;
+}
+
+.memory-card.is-matched {
+    pointer-events: none;
+    opacity: 0.7;
+    cursor: default;
+    filter: grayscale(30%);
+}
+
+/* =========================
+    ANIMATIONS
+========================= */
+
+@keyframes scanning {
+    0% {
+        top: 0px;
+    }
+    50% {
+        top: calc(100% - 3px);
+    }
+    100% {
+        top: 0px;
+    }
+}
+
+/* =========================
+    HOVER (juste visuel)
+========================= */
+
+.memory-card:hover .memory-card-front {
+    box-shadow: inset 0 0 18px rgba(255, 0, 0, 0.9), 0 0 20px red;
+}
+
+.memory-card.is-flipped:hover .memory-card-front {
+    box-shadow: none;
+}
+
+.memory-card.is-flipped .memory-card-front {
+    visibility: hidden;
+}
+
+.memory-win {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    backdrop-filter: blur(4px);
+}
+
+.memory-win-box {
+    background: rgba(10,0,0,.95);
+    border: 2px solid #a60000;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 0 40px red;
+    animation: winAppear .6s ease;
+}
+
+.memory-win-box h2 {
+    color: #ff3b3b;
+    text-shadow: 0 0 12px red;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+.memory-win-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.memory-win-actions button {
+    padding: 12px 28px;
+    background: #160000;
+    border: 1px solid #a60000;
+    color: #fff;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: .3s;
+}
+
+.memory-win-actions button:hover {
+    background: #a60000;
+    box-shadow: 0 0 15px red;
+}
+
+@keyframes winAppear {
+    from {
+        transform: scale(.7);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

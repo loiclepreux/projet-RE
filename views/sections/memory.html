@@ -1,0 +1,56 @@
+<main class="memory-container">
+
+    <section id="memory-start">
+        <h1>Umbrella Files</h1>
+        <p>Sélectionnez la difficulté</p>
+
+        <div class="memory-difficulty">
+            <button data-level="facile">Facile</button>
+            <button data-level="moyen">Moyen</button>
+            <button data-level="difficile">Difficile</button>
+        </div>
+    </section>
+
+    <section id="memory-play" class="hidden">
+
+        <div class="memory-info">
+            <span>Temps : <span id="memory-timer">00:00</span></span>
+            <span>Coups : <span id="memory-moves">0</span></span>
+        </div>
+
+        <section class="memory-grid">
+
+            <!-- Carte -->
+            <div class="memory-card">
+                <div class="memory-card-inner">
+                    <div class="memory-card-front">
+                        <img src="assets/img/logo_umbrella.png" alt="logo_umbrella">
+                    </div>
+                    <div class="memory-card-back">
+                        <img src="assets/img/Leon.png" alt="Leon">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Duplique pour remplir la grille -->
+            <!-- (24, 36 ou 48 cartes selon difficulté plus tard) -->
+
+        </section>
+
+    </section>
+
+    <div id="memory-win" class="memory-win hidden">
+        <div class="memory-win-box">
+            <h2>🧬 Fichier Umbrella complété</h2>
+            <p>Données récupérées avec succès.</p>
+
+            <div class="memory-win-actions">
+                <button id="win-restart">Rejouer</button>
+                <button id="win-exit">Retour</button>
+            </div>
+        </div>
+
+        <p>Temps final : <span id="final-time"></span></p>
+    </div>
+
+</main>

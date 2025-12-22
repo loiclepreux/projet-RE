@@ -1,0 +1,93 @@
+<div class="clocks-container">
+
+                    <div class="clocks-left">
+
+                            <div class="clock-block">
+                                <span class="clock-label">New York</span>
+                                <div class="clock-circle" id="clock-ny"></div>
+                            </div>
+
+                            <div class="clock-block">
+                                <span class="clock-label">Tokyo</span>
+                                <div class="clock-circle" id="clock-tokyo"></div>
+                            </div>
+
+                            <div class="clock-block">
+                                <span class="clock-label">Paris</span>
+                                <div class="clock-circle" id="clock-paris"></div>
+                            </div>
+                    </div>
+                    <div class="clocks-right">
+
+                            <div class="clock-block">
+                                <span class="clock-label">London</span>
+                                <div class="clock-circle" id="clock-london"></div>
+                            </div>
+
+                        <div class="clock-block">
+                            <span class="clock-label">Moscou</span>
+                            <div class="clock-circle" id="clock-moscow"></div>
+                        </div>
+
+                        <div class="clock-block">
+                            <span class="clock-label">Pékin</span>
+                            <div class="clock-circle" id="clock-beijing"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+<main class="quiz-container">
+
+            <section id="quiz-loading" class="quiz-screen hidden">
+                <video id="loading-video" autoplay muted loop playsinline>
+                    <source src="assets/video/RESIDENT-EVIL.mp4" type="video/mp4">
+                    Votre navigateur ne supporte pas la vidéo.
+                </video>
+
+                <p class="loading-text">Connexion au système Umbrella...</p>
+            </section>
+
+            <section id="quiz-start" class="quiz-screen">
+
+                <div class="quiz-title">
+                    <h1>Testez vos connaissances sur Resident Evil</h1>
+                    <p>Êtes-vous prêt à affronter le virus T ?</p>
+                    <button id="start-btn" class="quiz-btn">Commencer</button>
+                </div>
+
+            </section>
+
+            <section id="quiz-difficulty" class="quiz-screen hidden">
+                <h2>Choisissez la difficulté</h2>
+
+                <div class="difficulty-buttons">
+                    <button data-difficulty="facile">Facile</button>
+                    <button data-difficulty="moyen">Moyen</button>
+                    <button data-difficulty="difficile">Difficile</button>
+                </div>
+            </section>
+
+            <section id="quiz-play" class="quiz-screen hidden">
+                <audio id="quiz-music" src="assets/audio/residentevil.mp3" preload="auto" loop></audio>
+                <div class="quiz-header">
+                    <div class="quiz-info">
+                        <span id="question-index">Question 1 / 20</span>
+                        <span id="timer">00:20</span>
+                    </div>
+                    <h2 id="question-text"></h2>
+                </div>
+
+                <div id="answers" class="answers">
+                    <!-- boutons réponses générés en JS -->
+                </div>
+            </section>
+
+            <section id="quiz-result" class="quiz-screen hidden">
+                <h2>Résultat</h2>
+                <p>Votre score : <span id="final-score">0</span></p>
+                <button id="restart-btn" class="quiz-btn">Rejouer</button>
+                <button id="go-score" class="quiz-btn">Voir Classement</button>
+            </section>
+
+        </main>

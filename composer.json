@@ -1,0 +1,17 @@
+{
+    "name": "lepre/projetre",
+    "version": "1.0",
+    "autoload": {
+        "psr-4": {
+            "monApp\\models\\": "models/",
+            "monApp\\controllers\\pages\\": "controllers/pages/",
+            "monApp\\core\\": "core/"
+        }
+    },
+    "authors": [
+        {
+            "name": "loic lepreux"
+        }
+    ],
+    "require": {}
+}

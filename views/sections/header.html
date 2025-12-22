@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>projet RE</title>
+    <link rel="stylesheet" href="assets/styles/style.css">
+    <script src="assets/js/script.js" defer></script>
+</head>
+<body>
+
+<header>
+            <div class="header-top">
+                <div class="left-logo">
+                    <img
+                        src="assets/img/logo_umbrella.png"
+                        alt="logo_umbrella"
+                        width="100"
+                        height="100"
+                    />
+                </div>
+
+                <h1>Bienvenue sur le quiz Resident Evil</h1>
+
+                <div class="right-logo">
+                    <img
+                        src="assets/img/logo_umbrella.png"
+                        alt="logo_umbrella"
+                        width="100"
+                        height="100"
+                    />
+                </div>
+            </div>
+
+            <nav>
+                <ul>
+                    <li><a href="./">Accueil</a></li>
+                    <li><a href="?p=quiz">Quiz</a></li>
+                    <li><a href="?p=memory">Memory</a></li>
+                    <li><a href="?p=score">Score</a></li>
+                    <li><a href="?p=forum">Forum</a></li>
+                    <li><a href="?p=contact">Contact</a></li>
+                    <li id="auth-nav"><a href="#" id="open-login">Connexion</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        
+            <!-- MODALE OVERLAY -->
+        <div id="auth-modal" class="auth-modal hidden">
+    <div class="auth-modal-content">
+
+        <span class="close-modal" id="close-auth">&times;</span>
+
+        <!-- LOGIN -->
+        <div id="login-screen">
+            <h2>Connexion</h2>
+            <input type="email" id="login-email" placeholder="Email">
+            <input type="password" id="login-password" placeholder="Mot de passe">
+            <button id="login-btn">Se connecter</button>
+            <p>Pas encore inscrit ? <a href="#" id="go-register">Créer un compte</a></p>
+        </div>
+
+        <!-- REGISTER -->
+        <div id="register-screen" class="hidden">
+            <h2>Créer un compte</h2>
+            <input type="email" id="register-email" placeholder="Email">
+            <input type="text" id="register-pseudo" placeholder="Pseudo">
+            <input type="password" id="register-password" placeholder="Mot de passe">
+            <button id="register-btn">S'inscrire</button>
+            <p>Déjà inscrit ? <a href="#" id="go-login">Se connecter</a></p>
+        </div>
+
+    </div>
+</div>
