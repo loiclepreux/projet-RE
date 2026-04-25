@@ -10,5 +10,3 @@ tools::gets();
 app::db();
 app::page();
 echo app::getHtml();
-
-?>
