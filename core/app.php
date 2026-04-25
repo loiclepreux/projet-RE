@@ -51,6 +51,7 @@ class app
         self::$rooter->addRoute("contact", "monApp\controllers\pages\pageContactController@index");
         self::$rooter->addRoute("api/quiz", "monApp\\controllers\\api\\quizController@getQuestions");
         self::$rooter->addRoute("404", "monApp\\controllers\\pages\\page404Controller@index");
+        self::$rooter->addRoute("api/score", "monApp\\controllers\\api\\scoreController@saveScore");
 
         $p = tools::get("p");
 

@@ -299,10 +299,35 @@ document.addEventListener("DOMContentLoaded", () => {
             endQuiz();
         }
     }
+
+    async function saveScore() {
+        try {
+            const userId = localStorage.getItem("user_id");
+
+            // si pas connecté → on ne sauvegarde pas
+            if (!userId) return;
+
+            await fetch("/projet-RE/?p=api/score", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    score: score,
+                    difficulty: selectedDifficulty,
+                    theme: "quiz",
+                }),
+            });
+        } catch (err) {
+            console.error("Erreur save score :", err);
+        }
+    }
     // END QUIZ //
 
     function endQuiz() {
         clearInterval(timer);
+        saveScore(); 
         quizMusic.pause();
         quizMusic.currentTime = 0;
         quizPlay.classList.add("hidden");
