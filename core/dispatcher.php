@@ -10,14 +10,13 @@ use monApp\controllers\pages\pageForumController;
 use monApp\controllers\pages\pageContactController;
 use monApp\controllers\pages\pageMemoryController;
 
-class dispatcher{
-    public function dispatch($route){
-        if(!$route){
+class dispatcher
+{
+    public function dispatch($route)
+    {
+        if (!$route) {
             $this->sendNotFound();
-        }else{
-            // [$controllerName,$method] = explode("@",$route);
-            // $controller = new $controllerName();
-            // $controller->$method();
+        } else {
 
             list($controllerName, $method) = explode("@", $route);
             if (!class_exists($controllerName)) {
@@ -32,14 +31,18 @@ class dispatcher{
                 throw new \Exception("Controller introuvable : " . $controllerName);
             }
             $controller = new $controllerName();
-            $controller->$method();
+
+            if (!method_exists($controller, $method)) {
+                throw new \Exception("Méthode introuvable : " . $method);
+            }
+
+            return $controller->$method();
         }
     }
-    public function sendNotFound(){
+    public function sendNotFound()
+    {
         header("HTTP/1.0 404 Not Found");
         $controller = new page404Controller();
-        $controller->index();
+        return $controller->index();
     }
 }
-
-?>

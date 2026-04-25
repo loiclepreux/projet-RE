@@ -6,8 +6,10 @@ class pageHomeController
 {
     public function index()
     {
-        require "views/pages/home.php";
+        ob_start(); // démarre la capture du HTML
+
+        require __DIR__ . '/../../views/pages/home.php';
+
+        return ob_get_clean(); // retourne le HTML au lieu de l'afficher
     }
 }
-
-?>
