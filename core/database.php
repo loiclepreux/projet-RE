@@ -1,42 +1,53 @@
-<?php 
+<?php
 
 namespace monApp\core;
 
 use PDO;
 use PDOException;
 
-class database{
+class database
+{
 
-private $serverName;
-private $bddName;
-private $userName;
-private $password;
+    private $serverName;
+    private $bddName;
+    private $userName;
+    private $password;
 
-private $db; //variable conservant la connexion à la base de données
+    private $db; //variable conservant la connexion à la base de données
 
-public function __construct($hote, $dbName, $user, $motDePasse){
+    public function __construct($hote, $dbName, $user, $motDePasse)
+    {
 
-    $this->serverName = $hote;
-    $this->bddName = $dbName;
-    $this->userName = $user;
-    $this->password = $motDePasse;
+        $this->serverName = $hote;
+        $this->bddName = $dbName;
+        $this->userName = $user;
+        $this->password = $motDePasse;
 
-try{
-    $this->db = new PDO("mysql:host=$this->serverName;dbname=$this->bddName","$this->userName","$this->password");
-    }catch(PDOException $erreur){
-        error_log("Erreur BDD : " . $erreur->getMessage());
-        throw $erreur;
+        try {
+            $this->db = new PDO(
+                "mysql:host={$this->serverName};dbname={$this->bddName};charset=utf8mb4",
+                $this->userName,
+                $this->password,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                ]
+            );
+        } catch (PDOException $erreur) {
+            error_log("Erreur BDD : " . $erreur->getMessage());
+            throw $erreur;
 
-        // echo "Erreur";
-        // echo $erreur->getMessage();
+        }
     }
-}
 
-    public function getPDO() {
+    public function getPDO()
+    {
         return $this->db;
     }
 
-    public function query($sql,$class){
+    public function query($sql, $class)
+    {
         try {
             $rst = $this->db->query($sql);
             if ($rst === false) {
@@ -44,8 +55,8 @@ try{
                 error_log("Error info : " . implode(", ", $this->db->errorInfo()));
                 return [];
             }
-            
-// Utiliser FETCH_CLASS au lieu de FETCH_ASSOC
+
+            // Utiliser FETCH_CLASS au lieu de FETCH_ASSOC
             $results = $rst->fetchAll(PDO::FETCH_CLASS, $class);
 
             error_log("Debug query : " . count($results) . " résultats trouvés");
@@ -56,7 +67,8 @@ try{
         }
     }
 
-    public function prepare($sql, $data, $class = null) {
+    public function prepare($sql, $data, $class = null)
+    {
         $rst = $this->db->prepare($sql);
         $success = $rst->execute($data);
 
@@ -69,7 +81,8 @@ try{
         return $success;
     }
 
-    public function exec($sql, $data = []) {
+    public function exec($sql, $data = [])
+    {
         if (empty($data)) {
             return $this->db->exec($sql);
         } else {
@@ -78,20 +91,23 @@ try{
         }
     }
 
-    public function lastInsertId() {
+    public function lastInsertId()
+    {
         return $this->db->lastInsertId();
     }
 
-    public function beginTransaction() {
+    public function beginTransaction()
+    {
         return $this->db->beginTransaction();
     }
 
-    public function commit() {
+    public function commit()
+    {
         return $this->db->commit();
     }
 
-    public function rollBack() {
+    public function rollBack()
+    {
         return $this->db->rollBack();
     }
 }
-?>

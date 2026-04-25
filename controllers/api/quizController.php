@@ -3,61 +3,74 @@
 namespace monApp\controllers\api;
 
 use monApp\core\app;
-use PDO; // ✅ IMPORTANT
+use PDO;
 
-class quizController {
+class quizController
+{
+    public function getQuestions()
+    {
+        header('Content-Type: application/json; charset=utf-8');
 
-    public function getQuestions() {
+        try {
+            if (!isset($_GET['difficulty'])) {
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'error' => 'difficulty_required'
+                ]);
+                exit;
+            }
 
-        header('Content-Type: application/json');
+            $difficulty = $_GET['difficulty'];
 
-        if (!isset($_GET['difficulty'])) {
-            http_response_code(400);
-            echo json_encode([
-                'error' => 'difficulty_required'
-            ]);
-            exit;
-        }
+            $allowed = ['facile', 'moyen', 'difficile'];
 
-        $difficulty = $_GET['difficulty'];
+            if (!in_array($difficulty, $allowed, true)) {
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'error' => 'invalid_difficulty'
+                ]);
+                exit;
+            }
 
-        // 🔹 Valeurs autorisées
-        $allowed = ['facile', 'moyen', 'difficile'];
-        if (!in_array($difficulty, $allowed)) {
-            http_response_code(400);
-            echo json_encode([
-                'error' => 'invalid_difficulty'
-            ]);
-            exit;
-        }
+            $pdo = app::$db->getPDO();
 
-          // 🔹 PDO
-        $pdo = app::$db->getPDO();
-
-        // 🔹 Questions filtrées
-        $stmt = $pdo->prepare("
-            SELECT id, question
-            FROM questions
-            WHERE difficulty = ?
-        ");
-        $stmt->execute([$difficulty]);
-        $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        shuffle($questions);
-        $questions = array_slice($questions, 0, 20);
-
-        // 🔹 Réponses
-        foreach ($questions as &$q) {
-            $stmtA = $pdo->prepare("
-                SELECT id, answer, is_true
-                FROM answers
-                WHERE question_id = ?
+            $stmt = $pdo->prepare("
+                SELECT id, question
+                FROM questions
+                WHERE difficulty = ?
+                ORDER BY RAND()
+                LIMIT 20
             ");
-            $stmtA->execute([$q['id']]);
-            $q['answers'] = $stmtA->fetchAll(PDO::FETCH_ASSOC);
-        }
+            $stmt->execute([$difficulty]);
+            $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        echo json_encode($questions);
-        exit;
+            foreach ($questions as &$q) {
+                $stmtA = $pdo->prepare("
+                    SELECT id, answer, is_true
+                    FROM answers
+                    WHERE question_id = ?
+                ");
+                $stmtA->execute([$q['id']]);
+                $q['answers'] = $stmtA->fetchAll(PDO::FETCH_ASSOC);
+
+                shuffle($q['answers']);
+            }
+
+            echo json_encode([
+                'success' => true,
+                'data' => $questions
+            ]);
+            exit;
+        } catch (\Throwable $e) {
+            http_response_code(500);
+
+            echo json_encode([
+                'success' => false,
+                'error' => 'server_error'
+            ]);
+            exit;
+        }
     }
 }

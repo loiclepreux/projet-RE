@@ -18,12 +18,14 @@ class app
 
     public static function db()
     {
+        $env = parse_ini_file(__DIR__ . '/../../.env');
+
         try {
             self::$db = new database(
-                "mysql-loic.alwaysdata.net", //IP
-                "loic_residentevil",       // Nom base de donnée
-                "loic",      // User
-                "Loic1983.",      // Mot de passe
+                $env['DB_HOST'],
+                $env['DB_NAME'],
+                $env['DB_USER'],
+                $env['DB_PASS']
             );
         } catch (\Exception $e) {
             echo "<!-- " . $e->getMessage() . " -->";
@@ -48,13 +50,38 @@ class app
         self::$rooter->addRoute("forum", "monApp\controllers\pages\pageForumController@index");
         self::$rooter->addRoute("contact", "monApp\controllers\pages\pageContactController@index");
         self::$rooter->addRoute("api/quiz", "monApp\\controllers\\api\\quizController@getQuestions");
+        self::$rooter->addRoute("404", "monApp\\controllers\\pages\\page404Controller@index");
 
         $p = tools::get("p");
+
+        // sécurisation
+        $p = trim($p);
+        $p = strtolower($p);
+
+        // autoriser uniquement lettres, chiffres, / et -
+        if (!preg_match('/^[a-z0-9\/\-]*$/', $p)) {
+            $p = "404";
+        }
 
         $route = self::$rooter->getRoute($p);
         self::$dispatcher = new dispatcher();
         ob_start();
-        self::$html = self::$dispatcher->dispatch($route);
+
+        try {
+            self::$html = self::$dispatcher->dispatch($route);
+        } catch (\Throwable $e) {
+
+            // log erreur
+            error_log($e->getMessage());
+
+            // affichage différent selon environnement
+            if (true) { // ← mets false en prod plus tard
+                self::$html = "<h1>Erreur</h1><pre>" . $e->getMessage() . "</pre>";
+            } else {
+                self::$html = "<h1>Une erreur est survenue</h1>";
+            }
+        }
+        
         ob_end_clean();
     }
 

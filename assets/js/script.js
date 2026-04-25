@@ -4,8 +4,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     function updateClock(id, timezone) {
         const el = document.getElementById(id);
-        if (!el)
-            return;
+        if (!el) return;
         el.textContent = new Intl.DateTimeFormat("fr-FR", {
             timeStyle: "medium",
             hour12: false,
@@ -98,12 +97,11 @@ document.addEventListener("DOMContentLoaded", () => {
 // ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-
     const params = new URLSearchParams(window.location.search);
     const currentPage = params.get("p") || "home";
     const navLinks = document.querySelectorAll("header nav ul li a");
 
-    navLinks.forEach(link => {
+    navLinks.forEach((link) => {
         const li = link.parentElement;
         const href = link.getAttribute("href");
 
@@ -114,10 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
             li.style.display = "none";
         }
-        if (
-            currentPage !== "home" &&
-            href === `?p=${currentPage}`
-        ) {
+        if (currentPage !== "home" && href === `?p=${currentPage}`) {
             li.style.display = "none";
         }
     });
@@ -148,7 +143,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const questionIndexEl = document.getElementById("question-index");
     const timerEl = document.getElementById("timer");
     const finalScore = document.getElementById("final-score");
-    const difficultyButtons = document.querySelectorAll(".difficulty-buttons button");
+    const difficultyButtons = document.querySelectorAll(
+        ".difficulty-buttons button",
+    );
     const quizMusic = document.getElementById("quiz-music");
     const quizLoading = document.getElementById("quiz-loading");
     const loadingVideo = document.getElementById("loading-video");
@@ -159,63 +156,69 @@ document.addEventListener("DOMContentLoaded", () => {
         quizPlay.classList.add("hidden");
         quizResult.classList.add("hidden");
         quizLoading.classList.add("hidden");
-}
+    }
 
     // CHARGEMENT DES QUESTIONS //
 
-async function loadQuestionsByDifficulty() {
-    try {
-        loadingVideo.currentTime = 0;
-        loadingVideo.play();
+    async function loadQuestionsByDifficulty() {
+        try {
+            loadingVideo.currentTime = 0;
+            loadingVideo.play();
 
-        const res = await fetch(`/projet-RE/?p=api/quiz&difficulty=${selectedDifficulty}`);
-        const data = await res.json();
+            const res = await fetch(
+                `/projet-RE/?p=api/quiz&difficulty=${selectedDifficulty}`,
+            );
+            const result = await res.json();
 
-        if (!Array.isArray(data) || !data.length) {
-            throw new Error("Aucune question");
+            if (
+                !result.success ||
+                !Array.isArray(result.data) ||
+                !result.data.length
+            ) {
+                throw new Error("Aucune question");
+            }
+
+            questions = result.data;
+            currentIndex = 0;
+            score = 0;
+
+            showQuestion();
+            return true;
+        } catch (err) {
+            console.error(err);
+            alert("Erreur de chargement du quiz");
+            hideAllScreens();
+            quizDifficulty.classList.remove("hidden");
+            return false;
         }
-
-        questions = data;
-        currentIndex = 0;
-        score = 0;
-
-        showQuestion();
-        return true;
-
-    } catch (err) {
-        alert("Erreur de chargement du quiz");
-        hideAllScreens();
-        quizDifficulty.classList.remove("hidden");
-        return false;
     }
-}
     // START BUTTON //
 
     if (startBtn) {
-    startBtn.addEventListener("click", () => {
-        quizStart.classList.add("hidden");
-        quizDifficulty.classList.remove("hidden");
-    });
+        startBtn.addEventListener("click", () => {
+            quizStart.classList.add("hidden");
+            quizDifficulty.classList.remove("hidden");
+        });
     }
     // DIFFICULTY SELECTION //
 
-    difficultyButtons.forEach(btn => {
-    btn.addEventListener("click", async () => {
-        selectedDifficulty = btn.dataset.difficulty;
+    difficultyButtons.forEach((btn) => {
+        btn.addEventListener("click", async () => {
+            selectedDifficulty = btn.dataset.difficulty;
 
-        hideAllScreens();
-        quizLoading.classList.remove("hidden");
+            hideAllScreens();
+            quizLoading.classList.remove("hidden");
 
-        quizMusic.volume = 0.2;
-        quizMusic.play();
+            quizMusic.volume = 0.2;
+            quizMusic.play();
 
-        const ok = await loadQuestionsByDifficulty();
-        if (!ok) return;
+            const ok = await loadQuestionsByDifficulty();
+            if (!ok) return;
 
-        hideAllScreens();
-        quizPlay.classList.remove("hidden");
+            hideAllScreens();
+            quizPlay.classList.remove("hidden");
+        });
     });
-});
     // TIMER //
 
     function startTimer() {
@@ -238,48 +241,50 @@ async function loadQuestionsByDifficulty() {
     }
     // SHOW QUESTION //
 
-function showQuestion() {
-    if (currentIndex >= questions.length) {
-        endQuiz();
-        return;
-    }
-    const q = questions[currentIndex];
+    function showQuestion() {
+        if (currentIndex >= questions.length) {
+            endQuiz();
+            return;
+        }
+        const q = questions[currentIndex];
 
-    questionIndexEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
-    questionText.textContent = q.question;
-    answersContainer.innerHTML = "";
+        questionIndexEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
+        questionText.textContent = q.question;
+        answersContainer.innerHTML = "";
 
-    q.answers.forEach(answer => {
-        const btn = document.createElement("button");
-        btn.className = "answer-btn";
-        btn.textContent = answer.answer;
-        btn.dataset.correct = answer.is_true;
+        q.answers.forEach((answer) => {
+            const btn = document.createElement("button");
+            btn.className = "answer-btn";
+            btn.textContent = answer.answer;
+            btn.dataset.correct = answer.is_true;
 
-        btn.addEventListener("click", () => {
-            clearInterval(timer);
-            disableAnswers();
+            btn.addEventListener("click", () => {
+                clearInterval(timer);
+                disableAnswers();
 
-            if (answer.is_true == 1) {
-                btn.classList.add("good");
-                score++;
-            } else {
-                btn.classList.add("bad");
-                revealCorrectAnswer();
-            }
-            setTimeout(nextQuestion, 1000);
+                if (answer.is_true == 1) {
+                    btn.classList.add("good");
+                    score++;
+                } else {
+                    btn.classList.add("bad");
+                    revealCorrectAnswer();
+                }
+                setTimeout(nextQuestion, 1000);
+            });
+            answersContainer.appendChild(btn);
         });
-        answersContainer.appendChild(btn);
-    });
-    startTimer();
-}
+        startTimer();
+    }
     // UTILITAIRES //
-    
+
     function disableAnswers() {
-        document.querySelectorAll(".answer-btn").forEach(btn => btn.disabled = true);
+        document
+            .querySelectorAll(".answer-btn")
+            .forEach((btn) => (btn.disabled = true));
     }
 
     function revealCorrectAnswer() {
-        document.querySelectorAll(".answer-btn").forEach(btn => {
+        document.querySelectorAll(".answer-btn").forEach((btn) => {
             if (btn.dataset.correct == 1) {
                 btn.classList.add("good");
             }
@@ -307,17 +312,10 @@ function showQuestion() {
 });
 
 // ======================================================
-// MUSIQUE SUR LE QUIZ SUR LE QUIZ
-// ======================================================
-
-const quizMusic = document.getElementById("quiz-music");
-
-// ======================================================
 // CHARGEMENT DES CARTE DE MEMORY
 // ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-
     // =========================
     // VARIABLES GLOBALES
     // =========================
@@ -365,7 +363,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "Tyran.png",
         "Uroboros.png",
         "William.png",
-        "Zombie.png"
+        "Zombie.png",
     ];
 
     // =========================
@@ -373,56 +371,56 @@ document.addEventListener("DOMContentLoaded", () => {
     // =========================
 
     const difficultyConfig = {
-        facile: 12,     // 24 cartes
-        moyen: 18,      // 36 cartes
-        difficile: 24  // 48 cartes
+        facile: 12, // 24 cartes
+        moyen: 18, // 36 cartes
+        difficile: 24, // 48 cartes
     };
 
     function applyDifficultyLayout(level) {
-    const grid = document.querySelector(".memory-grid");
-    const cards = document.querySelectorAll(".memory-card");
+        const grid = document.querySelector(".memory-grid");
+        const cards = document.querySelectorAll(".memory-card");
 
-    let columns, gap, cardWidth, cardHeight;
+        let columns, gap, cardWidth, cardHeight;
 
-    switch (level) {
-        case "facile":
-            columns = 6;
-            gap = "35px";
-            cardWidth = "90px";
-            cardHeight = "130px";
-            break;
+        switch (level) {
+            case "facile":
+                columns = 6;
+                gap = "35px";
+                cardWidth = "90px";
+                cardHeight = "130px";
+                break;
 
-        case "moyen":
-            columns = 9;
-            gap = "28px";
-            cardWidth = "90px";
-            cardHeight = "130px";
-            break;
+            case "moyen":
+                columns = 9;
+                gap = "28px";
+                cardWidth = "90px";
+                cardHeight = "130px";
+                break;
 
-        case "difficile":
-            columns = 12;
-            gap = "22px";
-            cardWidth = "90px";
-            cardHeight = "130px";
-            break;
+            case "difficile":
+                columns = 12;
+                gap = "22px";
+                cardWidth = "90px";
+                cardHeight = "130px";
+                break;
+        }
+
+        // Grid
+        grid.style.gridTemplateColumns = `repeat(${columns}, ${cardWidth})`;
+        grid.style.gap = gap;
+
+        // Cartes
+        cards.forEach((card) => {
+            card.style.width = cardWidth;
+            card.style.height = cardHeight;
+        });
     }
-
-    // Grid
-    grid.style.gridTemplateColumns = `repeat(${columns}, ${cardWidth})`;
-    grid.style.gap = gap;
-
-    // Cartes
-    cards.forEach(card => {
-        card.style.width = cardWidth;
-        card.style.height = cardHeight;
-    });
-}
 
     // =========================
     // ÉCOUTEURS DIFFICULTÉ
     // =========================
 
-    document.querySelectorAll(".memory-difficulty button").forEach(btn => {
+    document.querySelectorAll(".memory-difficulty button").forEach((btn) => {
         btn.addEventListener("click", () => {
             const level = btn.dataset.level;
             startGame(level);
@@ -485,7 +483,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function generateCards(cards) {
         grid.innerHTML = "";
 
-        cards.forEach(img => {
+        cards.forEach((img) => {
             const card = document.createElement("div");
             card.className = "memory-card";
             card.dataset.image = img;
@@ -534,11 +532,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // =========================
 
     function showWinScreen() {
-    winScreen.classList.remove("hidden");
+        winScreen.classList.remove("hidden");
 
-    document.getElementById("final-time").textContent =
-    document.getElementById("memory-timer").textContent;
-}
+        document.getElementById("final-time").textContent =
+            document.getElementById("memory-timer").textContent;
+    }
 
     function checkMatch() {
         const isMatch = firstCard.dataset.image === secondCard.dataset.image;
@@ -600,20 +598,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
     }
 
     document.getElementById("win-restart").addEventListener("click", () => {
-    location.reload();
+        location.reload();
     });
 
     document.getElementById("win-exit").addEventListener("click", () => {
-    winScreen.classList.add("hidden");
-    playScreen.classList.add("hidden");
-    startScreen.classList.remove("hidden");
+        winScreen.classList.add("hidden");
+        playScreen.classList.add("hidden");
+        startScreen.classList.remove("hidden");
     });
 
     resetGame();
