@@ -18,7 +18,11 @@ class app
 
     public static function db()
     {
-        $env = parse_ini_file(__DIR__ . '/../../.env');
+        $env = parse_ini_file(__DIR__ . '/../.env');
+
+        if (!$env) {
+            die("Erreur : fichier .env non lisible");
+        }
 
         try {
             self::$db = new database(
@@ -43,17 +47,18 @@ class app
         self::db();
 
         self::$rooter = new rooter();
-        self::$rooter->addRoute("", "monApp\controllers\pages\pageHomeController@index");
+        self::$rooter->addRoute("", "monApp\\controllers\\pages\\pageHomeController@index");
         self::$rooter->addRoute("quiz", "monApp\controllers\pages\pageQuizController@index");
         self::$rooter->addRoute("memory", "monApp\controllers\pages\pageMemoryController@index");
         self::$rooter->addRoute("score", "monApp\controllers\pages\pageScoreController@index");
         self::$rooter->addRoute("forum", "monApp\controllers\pages\pageForumController@index");
         self::$rooter->addRoute("contact", "monApp\controllers\pages\pageContactController@index");
-        self::$rooter->addRoute("api/quiz", "monApp\\controllers\\api\\quizController@getQuestions");
-        self::$rooter->addRoute("404", "monApp\\controllers\\pages\\page404Controller@index");
-        self::$rooter->addRoute("api/score", "monApp\\controllers\\api\\scoreController@saveScore");
+        self::$rooter->addRoute("api/quiz", "monApp\controllers\api\quizController@getQuestions");
+        self::$rooter->addRoute("404", "monApp\controllers\pages\page404Controller@index");
+        self::$rooter->addRoute("api/score", "monApp\controllers\api\scoreController@saveScore");
 
-        $p = tools::get("p");
+        tools::gets();
+        $p = tools::get("p") ?? "";
 
         // sécurisation
         $p = trim($p);
@@ -70,6 +75,7 @@ class app
 
         try {
             self::$html = self::$dispatcher->dispatch($route);
+
         } catch (\Throwable $e) {
 
             // log erreur
@@ -82,7 +88,7 @@ class app
                 self::$html = "<h1>Une erreur est survenue</h1>";
             }
         }
-        
+
         ob_end_clean();
     }
 
