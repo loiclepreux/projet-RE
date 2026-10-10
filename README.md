@@ -2,7 +2,7 @@
 
 Site fan autour de l'univers **Resident Evil** : un quiz chronométré, un jeu de Memory, un classement des joueurs, un forum et une page de contact.
 
-🔗 **En ligne :** https://loic-lepreux.com/projet-RE/
+🔗 **En ligne :** https://projet-residentevil.loic-lepreux.com
 
 > Projet personnel non officiel, réalisé pour apprendre. Resident Evil est une marque de Capcom.
 
