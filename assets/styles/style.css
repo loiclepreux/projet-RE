@@ -1313,3 +1313,35 @@ a.forum-topic {
     background: red;
     box-shadow: 0 0 12px red;
 }
+
+/* =========================
+    CONTACT
+========================= */
+
+/* Le piège à robots est sorti de l'écran */
+.contact-trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+#contact-form,
+#contact-form input,
+#contact-form textarea {
+    font-family: Arial, sans-serif;
+}
+
+#contact-submit:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.feedback.hidden {
+    display: none;
+}
+
+.feedback-error {
+    color: #ff6b6b;
+}

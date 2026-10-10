@@ -71,6 +71,9 @@ class app
         self::$rooter->addRoute('api/forum/create', 'monApp\controllers\api\forumController@createTopic');
         self::$rooter->addRoute('api/forum/reply', 'monApp\controllers\api\forumController@reply');
 
+        // Contact
+        self::$rooter->addRoute('api/contact', 'monApp\controllers\api\contactController@send');
+
         tools::gets();
         $p = tools::get("p") ?? "";
 

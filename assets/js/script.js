@@ -981,3 +981,52 @@ document.addEventListener("DOMContentLoaded", () => {
         loadTopics();
     }
 });
+
+// ======================================================
+// CONTACT
+// ======================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("contact-form");
+    if (!form) return; // on n'est pas sur la page Contact
+
+    const feedback = document.getElementById("contact-feedback");
+    const submitBtn = document.getElementById("contact-submit");
+
+    function showFeedback(message, isError) {
+        feedback.textContent = message;
+        feedback.classList.remove("hidden");
+        feedback.classList.toggle("feedback-error", isError);
+    }
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        submitBtn.disabled = true;
+
+        try {
+            const res = await fetch("?p=api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: document.getElementById("contact-name").value,
+                    email: document.getElementById("contact-email").value,
+                    message: document.getElementById("contact-message").value,
+                    website: document.getElementById("contact-website").value,
+                }),
+            });
+            const result = await res.json().catch(() => ({}));
+            if (!res.ok || !result.success) {
+                throw new Error(
+                    result.error || "Le message n'a pas pu être envoyé.",
+                );
+            }
+
+            form.reset();
+            showFeedback("✔ Message envoyé, merci ! On te répond vite.", false);
+        } catch (err) {
+            showFeedback(err.message, true);
+        } finally {
+            submitBtn.disabled = false;
+        }
+    });
+});

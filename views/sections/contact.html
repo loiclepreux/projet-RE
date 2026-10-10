@@ -1,18 +1,47 @@
+<main class="contact-container">
+    <h1>Contactez-nous</h1>
+    <p>
+        Pour toute question liée au quiz, suggestions ou signalement d'un bug !
+    </p>
 
-        <main class="contact-container">
+    <form id="contact-form">
+        <!-- Si le joueur est connecté, son pseudo est déjà rempli -->
+        <input
+            type="text"
+            id="contact-name"
+            placeholder="Votre nom"
+            required
+            minlength="2"
+            maxlength="100"
+            value="<?= htmlspecialchars($_SESSION['user']['username'] ?? '') ?>"
+        />
+        <input
+            type="email"
+            id="contact-email"
+            placeholder="Votre email"
+            required
+        />
+        <textarea
+            id="contact-message"
+            placeholder="Votre message... (10 caractères minimum)"
+            required
+            minlength="10"
+            maxlength="3000"
+        ></textarea>
 
-            <h1>Contactez-nous</h1>
-            <p>Pour toute question liée au quiz, suggestions ou signalement d’un bug !</p>
+        <!-- Piège à robots : invisible pour les humains, ne pas remplir -->
+        <input
+            type="text"
+            id="contact-website"
+            class="contact-trap"
+            tabindex="-1"
+            autocomplete="off"
+            aria-hidden="true"
+        />
 
-            <form id="contact-form">
-                <input type="text" id="contact-name" placeholder="Votre nom" required />
-                <input type="email" id="contact-email" placeholder="Votre email" required />
-                <textarea id="contact-message" placeholder="Votre message..." required></textarea>
+        <button type="submit" id="contact-submit">Envoyer</button>
+    </form>
 
-                <button id="contact-submit">Envoyer</button>
-            </form>
-
-            <!-- Message retour -->
-            <p id="contact-feedback" class="feedback hidden"></p>
-
-        </main>
+    <!-- Message retour -->
+    <p id="contact-feedback" class="feedback hidden"></p>
+</main>
