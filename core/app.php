@@ -32,7 +32,8 @@ class app
                 $env['DB_PASS']
             );
         } catch (\Exception $e) {
-            echo "<!-- " . $e->getMessage() . " -->";
+            // Le détail de l'erreur (qui peut contenir des infos sur la base) reste dans les logs
+            error_log("Connexion BDD impossible : " . $e->getMessage());
         }
     }
 
@@ -98,7 +99,7 @@ class app
             error_log($e->getMessage());
 
             // affichage différent selon environnement
-            if (true) { // ← mets false en prod plus tard
+            if (DEV) { // le détail de l'erreur seulement sur ton PC
                 self::$html = "<h1>Erreur</h1><pre>" . $e->getMessage() . "</pre>";
             } else {
                 self::$html = "<h1>Une erreur est survenue</h1>";

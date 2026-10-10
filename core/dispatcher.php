@@ -15,7 +15,7 @@ class dispatcher
     public function dispatch($route)
     {
         if (!$route) {
-            $this->sendNotFound();
+            return $this->sendNotFound();
         } else {
 
             list($controllerName, $method) = explode("@", $route);

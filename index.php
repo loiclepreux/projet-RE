@@ -1,7 +1,11 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// DEV = true quand le site tourne sur ton PC, false une fois en ligne
+define('DEV', in_array($_SERVER['SERVER_NAME'] ?? '', ['localhost', '127.0.0.1'], true));
+
+// En ligne, les erreurs PHP ne sont jamais affichées aux visiteurs (elles vont dans les logs)
+ini_set('display_errors', DEV ? '1' : '0');
+ini_set('display_startup_errors', DEV ? '1' : '0');
 error_reporting(E_ALL);
 
 // Session PHP : c'est elle qui retient qui est connecté.
