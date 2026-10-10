@@ -33,6 +33,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const registerForm = document.getElementById("register-screen");
     const authError = document.getElementById("auth-error");
 
+    // Page où aller après la connexion (null = on recharge la page actuelle)
+    let redirectAfterAuth = null;
+
     // Envoie des données en JSON à notre API PHP et renvoie sa réponse
     async function postJson(url, data) {
         const res = await fetch(url, {
@@ -52,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         authError.classList.remove("hidden");
     }
 
-    function openModal(screen) {
+    function showScreen(screen) {
         authError.classList.add("hidden");
         authModal.classList.remove("hidden");
         loginForm.classList.toggle("hidden", screen !== "login");
@@ -60,19 +63,36 @@ document.addEventListener("DOMContentLoaded", () => {
         authModal.querySelector(`#${screen}-screen input`).focus();
     }
 
-    // D'autres scripts (quiz, forum) peuvent ouvrir la fenêtre de connexion
+    function openModal(screen, redirect = null) {
+        redirectAfterAuth = redirect;
+        showScreen(screen);
+    }
+
+    function afterAuth() {
+        if (redirectAfterAuth) {
+            location.href = redirectAfterAuth;
+        } else {
+            location.reload();
+        }
+    }
+
+    // D'autres scripts (quiz, page score) peuvent ouvrir la fenêtre de connexion
     window.openAuthModal = openModal;
 
     document.addEventListener("click", async (event) => {
         const id = event.target.id;
 
-        if (id === "open-login" || id === "go-login") {
+        if (id === "open-login") {
             event.preventDefault();
             openModal("login");
         }
+        if (id === "go-login") {
+            event.preventDefault();
+            showScreen("login");
+        }
         if (id === "go-register") {
             event.preventDefault();
-            openModal("register");
+            showScreen("register");
         }
         // Clic sur la croix ou sur le fond noir autour de la fenêtre
         if (id === "close-auth" || event.target === authModal) {
@@ -97,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 email: document.getElementById("login-email").value,
                 password: document.getElementById("login-password").value,
             });
-            location.reload();
+            afterAuth();
         } catch (err) {
             showError(err.message);
         }
@@ -111,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 username: document.getElementById("register-pseudo").value,
                 password: document.getElementById("register-password").value,
             });
-            location.reload();
+            afterAuth();
         } catch (err) {
             showError(err.message);
         }
@@ -145,10 +165,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ======================================================
-// APPARITION DU QUIZ
+// QUIZ
 // ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
+    const quizPlay = document.getElementById("quiz-play");
+    if (!quizPlay) return; // on n'est pas sur la page Quiz
+
     // VARIABLES //
 
     let questions = [];
@@ -157,18 +180,21 @@ document.addEventListener("DOMContentLoaded", () => {
     let selectedDifficulty = null;
     let timer = null;
     let timeLeft = 15;
+
     // ELEMENTS DOM //
 
     const startBtn = document.getElementById("start-btn");
     const quizStart = document.getElementById("quiz-start");
     const quizDifficulty = document.getElementById("quiz-difficulty");
-    const quizPlay = document.getElementById("quiz-play");
     const quizResult = document.getElementById("quiz-result");
     const questionText = document.getElementById("question-text");
     const answersContainer = document.getElementById("answers");
     const questionIndexEl = document.getElementById("question-index");
     const timerEl = document.getElementById("timer");
     const finalScore = document.getElementById("final-score");
+    const finalTotal = document.getElementById("final-total");
+    const scoreStatus = document.getElementById("score-status");
+    const restartBtn = document.getElementById("restart-btn");
     const difficultyButtons = document.querySelectorAll(
         ".difficulty-buttons button",
     );
@@ -189,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadQuestionsByDifficulty() {
         try {
             loadingVideo.currentTime = 0;
-            loadingVideo.play();
+            loadingVideo.play().catch(() => {});
 
             const res = await fetch(
                 `?p=api/quiz&difficulty=${selectedDifficulty}`,
@@ -207,8 +233,6 @@ document.addEventListener("DOMContentLoaded", () => {
             questions = result.data;
             currentIndex = 0;
             score = 0;
-
-            showQuestion();
             return true;
         } catch (err) {
             console.error(err);
@@ -218,15 +242,15 @@ document.addEventListener("DOMContentLoaded", () => {
             return false;
         }
     }
-    // START BUTTON //
 
-    if (startBtn) {
-        startBtn.addEventListener("click", () => {
-            quizStart.classList.add("hidden");
-            quizDifficulty.classList.remove("hidden");
-        });
-    }
-    // DIFFICULTY SELECTION //
+    // BOUTON COMMENCER //
+
+    startBtn.addEventListener("click", () => {
+        quizStart.classList.add("hidden");
+        quizDifficulty.classList.remove("hidden");
+    });
+
+    // CHOIX DE LA DIFFICULTÉ //
 
     difficultyButtons.forEach((btn) => {
         btn.addEventListener("click", async () => {
@@ -236,15 +260,17 @@ document.addEventListener("DOMContentLoaded", () => {
             quizLoading.classList.remove("hidden");
 
             quizMusic.volume = 0.2;
-            quizMusic.play();
+            quizMusic.play().catch(() => {});
 
             const ok = await loadQuestionsByDifficulty();
             if (!ok) return;
 
             hideAllScreens();
             quizPlay.classList.remove("hidden");
+            showQuestion();
         });
     });
+
     // TIMER //
 
     function startTimer() {
@@ -258,20 +284,15 @@ document.addEventListener("DOMContentLoaded", () => {
             timerEl.textContent = `00:${timeLeft < 10 ? "0" : ""}${timeLeft}`;
 
             if (timeLeft <= 0) {
-                clearInterval(timer);
-                disableAnswers();
-                revealCorrectAnswer();
-                setTimeout(nextQuestion, 1000);
+                // Temps écoulé : on envoie "pas de réponse" au serveur
+                handleAnswer(null, null);
             }
         }, 1000);
     }
-    // SHOW QUESTION //
+
+    // AFFICHER UNE QUESTION //
 
     function showQuestion() {
-        if (currentIndex >= questions.length) {
-            endQuiz();
-            return;
-        }
         const q = questions[currentIndex];
 
         questionIndexEl.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
@@ -282,26 +303,43 @@ document.addEventListener("DOMContentLoaded", () => {
             const btn = document.createElement("button");
             btn.className = "answer-btn";
             btn.textContent = answer.answer;
-            btn.dataset.correct = answer.is_true;
-
-            btn.addEventListener("click", () => {
-                clearInterval(timer);
-                disableAnswers();
-
-                if (answer.is_true == 1) {
-                    btn.classList.add("good");
-                    score++;
-                } else {
-                    btn.classList.add("bad");
-                    revealCorrectAnswer();
-                }
-                setTimeout(nextQuestion, 1000);
-            });
+            btn.dataset.id = answer.id;
+            btn.addEventListener("click", () => handleAnswer(answer.id, btn));
             answersContainer.appendChild(btn);
         });
+
         startTimer();
     }
-    // UTILITAIRES //
+
+    // RÉPONSE : c'est le serveur qui dit si c'est juste //
+
+    async function handleAnswer(answerId, clickedBtn) {
+        clearInterval(timer);
+        disableAnswers();
+
+        try {
+            const res = await fetch("?p=api/quiz/answer", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    question_id: questions[currentIndex].id,
+                    answer_id: answerId,
+                }),
+            });
+            const result = await res.json();
+            if (!result.success) throw new Error(result.error);
+
+            score = result.score;
+            if (clickedBtn) {
+                clickedBtn.classList.add(result.correct ? "good" : "bad");
+            }
+            revealCorrectAnswer(result.correct_answer_id);
+        } catch (err) {
+            console.error("Erreur réponse :", err);
+        }
+
+        setTimeout(nextQuestion, 1000);
+    }
 
     function disableAnswers() {
         document
@@ -309,12 +347,9 @@ document.addEventListener("DOMContentLoaded", () => {
             .forEach((btn) => (btn.disabled = true));
     }
 
-    function revealCorrectAnswer() {
-        document.querySelectorAll(".answer-btn").forEach((btn) => {
-            if (btn.dataset.correct == 1) {
-                btn.classList.add("good");
-            }
-        });
+    function revealCorrectAnswer(correctId) {
+        const btn = answersContainer.querySelector(`[data-id="${correctId}"]`);
+        if (btn) btn.classList.add("good");
     }
 
     function nextQuestion() {
@@ -326,40 +361,48 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    async function saveScore() {
-        try {
-            const userId = localStorage.getItem("user_id");
+    // FIN DE PARTIE //
 
-            // si pas connecté → on ne sauvegarde pas
-            if (!userId) return;
-
-            await fetch("?p=api/score", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    user_id: userId,
-                    score: score,
-                    difficulty: selectedDifficulty,
-                    theme: "quiz",
-                }),
-            });
-        } catch (err) {
-            console.error("Erreur save score :", err);
-        }
-    }
-    // END QUIZ //
-
-    function endQuiz() {
+    async function endQuiz() {
         clearInterval(timer);
-        saveScore();
         quizMusic.pause();
         quizMusic.currentTime = 0;
-        quizPlay.classList.add("hidden");
+
+        hideAllScreens();
         quizResult.classList.remove("hidden");
         finalScore.textContent = score;
+        finalTotal.textContent = questions.length;
+        scoreStatus.textContent = "Enregistrement du score...";
+
+        try {
+            const res = await fetch("?p=api/score", { method: "POST" });
+            const result = await res.json();
+
+            if (result.saved) {
+                scoreStatus.textContent = "✔ Score enregistré au classement.";
+            } else if (result.reason === "not_logged") {
+                scoreStatus.innerHTML = `Connecte-toi pour enregistrer ce score au classement.
+                    <button type="button" id="save-login" class="quiz-btn">Se connecter</button>`;
+                document
+                    .getElementById("save-login")
+                    .addEventListener("click", () => {
+                        window.openAuthModal("login", "?p=score");
+                    });
+            } else {
+                scoreStatus.textContent = "";
+            }
+        } catch (err) {
+            console.error("Erreur save score :", err);
+            scoreStatus.textContent = "Le score n'a pas pu être enregistré.";
+        }
     }
+
+    // REJOUER //
+
+    restartBtn.addEventListener("click", () => {
+        hideAllScreens();
+        quizDifficulty.classList.remove("hidden");
+    });
 });
 
 // ======================================================
@@ -658,4 +701,87 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     resetGame();
+});
+
+// ======================================================
+// PAGE SCORE : MES SCORES + CLASSEMENT
+// ======================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+    const leaderboardBody = document.getElementById("leaderboard-body");
+    if (!leaderboardBody) return; // on n'est pas sur la page Score
+
+    const myScores = document.getElementById("my-scores");
+    const tabs = document.querySelectorAll(".score-tabs button");
+
+    async function loadScores(difficulty) {
+        tabs.forEach((tab) =>
+            tab.classList.toggle(
+                "active",
+                tab.dataset.difficulty === difficulty,
+            ),
+        );
+
+        try {
+            const res = await fetch(`?p=api/scores&difficulty=${difficulty}`);
+            const data = await res.json();
+            if (!data.success) throw new Error();
+
+            showMyScores(data.me, difficulty);
+            showLeaderboard(data.leaderboard, data.me);
+        } catch {
+            leaderboardBody.innerHTML = `<tr><td colspan="4">Impossible de charger le classement.</td></tr>`;
+        }
+    }
+
+    function showMyScores(me, difficulty) {
+        if (!me) {
+            myScores.innerHTML = `
+                <p>Connecte-toi pour garder tes scores et apparaître au classement.</p>
+                <button type="button" id="score-login" class="quiz-btn">Se connecter</button>`;
+            document
+                .getElementById("score-login")
+                .addEventListener("click", () => {
+                    window.openAuthModal("login");
+                });
+            return;
+        }
+
+        // textContent : le pseudo est affiché comme du texte, jamais comme du HTML
+        myScores.innerHTML = `
+            <p>Bienvenue, <span class="auth-pseudo"></span></p>
+            <p>Meilleur score en ${difficulty} : <strong>${me.best ?? "-"}</strong>/20</p>
+            <p>Parties jouées en ${difficulty} : <strong>${me.games}</strong></p>
+            <p>Dernier score : <strong>${me.last ? `${me.last.score}/20 (${me.last.difficulty})` : "-"}</strong></p>`;
+        myScores.querySelector(".auth-pseudo").textContent = me.username;
+    }
+
+    function showLeaderboard(rows, me) {
+        leaderboardBody.innerHTML = "";
+
+        if (!rows.length) {
+            leaderboardBody.innerHTML = `<tr><td colspan="4">Personne n'a encore joué dans cette difficulté. Lance-toi !</td></tr>`;
+            return;
+        }
+
+        rows.forEach((row, i) => {
+            const tr = document.createElement("tr");
+            if (me && row.username === me.username) tr.classList.add("me");
+
+            [i + 1, row.username, `${row.best}/20`, row.games].forEach(
+                (value) => {
+                    const td = document.createElement("td");
+                    td.textContent = value;
+                    tr.appendChild(td);
+                },
+            );
+            leaderboardBody.appendChild(tr);
+        });
+    }
+
+    tabs.forEach((tab) => {
+        tab.addEventListener("click", () => loadScores(tab.dataset.difficulty));
+    });
+
+    loadScores("facile");
 });

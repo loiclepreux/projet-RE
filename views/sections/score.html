@@ -1,34 +1,36 @@
 <main class="score-container">
+    <!-- MES SCORES -->
+    <section class="user-score">
+        <h1>Vos scores</h1>
+        <div id="my-scores" class="score-info">
+            <!-- rempli par le JavaScript -->
+        </div>
+    </section>
 
-            <!-- SECTION SCORE PERSONNEL -->
-            <section class="user-score">
+    <!-- CLASSEMENT MONDIAL -->
+    <section class="leaderboard">
+        <h2>Classement mondial</h2>
 
-                <h1>Votre Score</h1>
-                <p id="welcome-user">Bienvenue, <span id="user-name"></span></p>
+        <div class="score-tabs">
+            <button type="button" data-difficulty="facile" class="active">
+                Facile
+            </button>
+            <button type="button" data-difficulty="moyen">Moyen</button>
+            <button type="button" data-difficulty="difficile">Difficile</button>
+        </div>
 
-                <div class="score-info">
-                    <p>Meilleur score : <span id="best-score">-</span>/20</p>
-                    <p>Dernier score : <span id="last-score">-</span>/20</p>
-                </div>
-                
-            </section>
-
-            <!-- SECTION TOP MONDIAL -->
-            <section class="leaderboard">
-                <h2>Classement Mondial</h2>
-
-                <table>
-                    <thead>
-                        <tr>
-                        <th>#</th>
-                        <th>Pseudo</th>
-                        <th>Score</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-body">
-                        <!-- js va insérer les lignes -->
-                    </tbody>
-                </table>
-            </section>
-
-        </main>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Pseudo</th>
+                    <th>Meilleur score</th>
+                    <th>Parties</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                <!-- rempli par le JavaScript -->
+            </tbody>
+        </table>
+    </section>
+</main>

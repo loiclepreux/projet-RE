@@ -56,6 +56,8 @@ class app
         self::$rooter->addRoute("api/quiz", "monApp\controllers\api\quizController@getQuestions");
         self::$rooter->addRoute("404", "monApp\controllers\pages\page404Controller@index");
         self::$rooter->addRoute("api/score", "monApp\controllers\api\scoreController@saveScore");
+        self::$rooter->addRoute("api/scores", "monApp\controllers\api\scoreController@getScores");
+        self::$rooter->addRoute("api/quiz/answer", "monApp\controllers\api\quizController@answer");
 
         // Comptes
         self::$rooter->addRoute("api/register", "monApp\controllers\api\authController@register");

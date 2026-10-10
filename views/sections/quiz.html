@@ -71,7 +71,7 @@
         <div class="quiz-header">
             <div class="quiz-info">
                 <span id="question-index">Question 1 / 20</span>
-                <span id="timer">00:20</span>
+                <span id="timer">00:15</span>
             </div>
             <h2 id="question-text"></h2>
         </div>
@@ -83,8 +83,13 @@
 
     <section id="quiz-result" class="quiz-screen hidden">
         <h2>Résultat</h2>
-        <p>Votre score : <span id="final-score">0</span></p>
-        <button id="restart-btn" class="quiz-btn">Rejouer</button>
-        <button id="go-score" class="quiz-btn">Voir Classement</button>
+        <p class="final-score">
+            <span id="final-score">0</span> / <span id="final-total">20</span>
+        </p>
+        <p id="score-status" class="score-status"></p>
+        <div class="result-buttons">
+            <button id="restart-btn" class="quiz-btn">Rejouer</button>
+            <a href="?p=score" class="quiz-btn">Voir le classement</a>
+        </div>
     </section>
 </main>

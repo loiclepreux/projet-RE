@@ -1127,3 +1127,71 @@ textarea {
     color: #ff4d4d;
     text-shadow: 0 0 8px red;
 }
+
+/* =========================
+    SCORES
+========================= */
+
+.final-score {
+    font-size: 56px;
+    text-shadow: 0 0 12px red;
+    margin: 10px 0;
+}
+
+.score-status {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    min-height: 24px;
+}
+
+.score-status .quiz-btn {
+    display: block;
+    margin: 12px auto 0;
+    font-size: 16px;
+}
+
+.result-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+a.quiz-btn {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.score-info p {
+    margin: 8px 0;
+}
+
+.score-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.score-tabs button {
+    padding: 8px 18px;
+    background: transparent;
+    border: 1px solid #a60000;
+    color: #fff;
+    font-family: inherit;
+    font-size: 18px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.score-tabs button:hover,
+.score-tabs button.active {
+    background: #a60000;
+    box-shadow: 0 0 10px red;
+}
+
+tbody tr.me {
+    background: rgba(255, 0, 0, 0.25);
+    font-weight: bold;
+}

@@ -4,6 +4,10 @@ namespace monApp\controllers\api;
 
 use monApp\core\app;
 
+
+// Besoin de scoreController pour enregistrer un score en attente à la connexion
+require_once __DIR__ . '/scoreController.php';
+
 class authController
 {
     // Envoie une réponse JSON et arrête le script
@@ -104,5 +108,8 @@ class authController
         // Nouvel identifiant de session à chaque connexion (protège contre le vol de session)
         session_regenerate_id(true);
         $_SESSION['user'] = ['id' => $id, 'username' => $username];
+
+        // Une partie finie avant de se connecter ? On enregistre son score maintenant
+        scoreController::savePendingQuiz($id);
     }
 }
