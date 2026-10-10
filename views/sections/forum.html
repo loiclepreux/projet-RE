@@ -1,19 +1,76 @@
 <main class="forum-container">
+    <!-- ===== LISTE DES SUJETS ===== -->
+    <section id="forum-list-view">
+        <?php if (!empty($_SESSION['user'])): ?>
+        <form class="forum-create" id="create-topic-form">
+            <h1>Nouveau sujet</h1>
+            <input
+                type="text"
+                id="topic-title"
+                placeholder="Titre du sujet"
+                required
+                minlength="3"
+                maxlength="120"
+            />
+            <textarea
+                id="topic-message"
+                placeholder="Message..."
+                required
+                minlength="2"
+                maxlength="3000"
+            ></textarea>
+            <p id="create-error" class="forum-error hidden"></p>
+            <button type="submit" id="create-topic">Créer</button>
+        </form>
+        <?php else: ?>
+        <div class="forum-login-hint">
+            <p>Connecte-toi pour créer un sujet ou répondre.</p>
+            <button type="button" class="quiz-btn forum-login-btn">
+                Se connecter
+            </button>
+        </div>
+        <?php endif; ?>
 
-            <!-- Créer un sujet -->
-            <section class="forum-create">
-                <h1>Nouveau sujet</h1>
-                <input type="text" id="topic-title" placeholder="Titre du sujet">
-                <textarea id="topic-message" placeholder="Message..."></textarea>
-                <button id="create-topic">Créer</button>
-            </section>
+        <section class="forum-list">
+            <h2>Sujets récents</h2>
+            <div id="topics">
+                <!-- rempli par le JavaScript -->
+            </div>
+        </section>
+    </section>
 
-            <!-- Liste des sujets -->
-            <section class="forum-list">
-                <h2>Sujets récents</h2>
-                <div id="topics">
-                <!-- Insertion dynamique des sujets -->
-                </div>
-            </section>
+    <!-- ===== UN SUJET OUVERT ===== -->
+    <section id="forum-topic-view" class="hidden">
+        <a href="?p=forum" class="forum-back">← Retour aux sujets</a>
 
-        </main>
+        <article id="topic-detail" class="forum-post forum-post-main">
+            <!-- rempli par le JavaScript -->
+        </article>
+
+        <h2 class="forum-replies-title">Réponses</h2>
+        <div id="replies">
+            <!-- rempli par le JavaScript -->
+        </div>
+
+        <?php if (!empty($_SESSION['user'])): ?>
+        <form id="reply-form" class="forum-reply-form">
+            <textarea
+                id="reply-message"
+                placeholder="Ta réponse..."
+                required
+                minlength="2"
+                maxlength="3000"
+            ></textarea>
+            <p id="reply-error" class="forum-error hidden"></p>
+            <button type="submit" id="reply-btn">Répondre</button>
+        </form>
+        <?php else: ?>
+        <div class="forum-login-hint">
+            <p>Connecte-toi pour répondre à ce sujet.</p>
+            <button type="button" class="quiz-btn forum-login-btn">
+                Se connecter
+            </button>
+        </div>
+        <?php endif; ?>
+    </section>
+</main>

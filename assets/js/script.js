@@ -785,3 +785,199 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadScores("facile");
 });
+
+// ======================================================
+// FORUM
+// ======================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+    const listView = document.getElementById("forum-list-view");
+    if (!listView) return; // on n'est pas sur la page Forum
+
+    const topicView = document.getElementById("forum-topic-view");
+    const topicsEl = document.getElementById("topics");
+    const topicDetail = document.getElementById("topic-detail");
+    const repliesEl = document.getElementById("replies");
+    const createForm = document.getElementById("create-topic-form"); // absent si pas connecté
+    const replyForm = document.getElementById("reply-form"); // absent si pas connecté
+
+    // ?p=forum = liste des sujets, ?p=forum&topic=12 = le sujet n°12
+    const topicId = new URLSearchParams(location.search).get("topic");
+
+    // Les boutons "Se connecter" ramènent sur la même page après connexion
+    document.querySelectorAll(".forum-login-btn").forEach((btn) => {
+        btn.addEventListener("click", () => window.openAuthModal("login"));
+    });
+
+    // La base enregistre en heure UTC ("Z") : le navigateur convertit en heure locale
+    function formatDate(sqlDate) {
+        return new Date(sqlDate.replace(" ", "T") + "Z").toLocaleString(
+            "fr-FR",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+            },
+        );
+    }
+
+    // Crée un élément HTML avec du texte dedans (textContent = jamais de HTML injecté)
+    function el(tag, className, text) {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text !== undefined) node.textContent = text;
+        return node;
+    }
+
+    async function postJson(url, data) {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+        const result = await res.json().catch(() => ({}));
+        if (!res.ok || !result.success) {
+            throw new Error(result.error || "Une erreur est survenue.");
+        }
+        return result;
+    }
+
+    function showError(id, message) {
+        const box = document.getElementById(id);
+        box.textContent = message;
+        box.classList.remove("hidden");
+    }
+
+    // ===== LISTE =====
+
+    async function loadTopics() {
+        try {
+            const res = await fetch("?p=api/forum");
+            const data = await res.json();
+            topicsEl.innerHTML = "";
+
+            if (!data.topics.length) {
+                topicsEl.appendChild(
+                    el(
+                        "p",
+                        "forum-empty",
+                        "Aucun sujet pour l'instant. Lance la discussion !",
+                    ),
+                );
+                return;
+            }
+
+            data.topics.forEach((topic) => {
+                const link = el("a", "forum-topic");
+                link.href = `?p=forum&topic=${topic.id}`;
+                link.appendChild(el("h3", "", topic.title));
+                const replies = Number(topic.replies);
+                link.appendChild(
+                    el(
+                        "p",
+                        "topic-meta",
+                        `Par ${topic.username} · ${formatDate(topic.created_at)} · ${replies} réponse${replies > 1 ? "s" : ""}`,
+                    ),
+                );
+                topicsEl.appendChild(link);
+            });
+        } catch {
+            topicsEl.innerHTML = "<p>Impossible de charger les sujets.</p>";
+        }
+    }
+
+    // ===== UN SUJET =====
+
+    function postBlock(post, container) {
+        container.innerHTML = "";
+        container.appendChild(
+            el(
+                "p",
+                "topic-meta",
+                `${post.username} · ${formatDate(post.created_at)}`,
+            ),
+        );
+        container.appendChild(el("p", "forum-message", post.message));
+    }
+
+    async function loadTopic() {
+        listView.classList.add("hidden");
+        topicView.classList.remove("hidden");
+
+        try {
+            const res = await fetch(
+                `?p=api/forum/topic&id=${encodeURIComponent(topicId)}`,
+            );
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error);
+
+            document.title = `${data.topic.title} - Forum`;
+            postBlock(data.topic, topicDetail);
+            topicDetail.prepend(el("h1", "", data.topic.title));
+
+            repliesEl.innerHTML = "";
+            if (!data.replies.length) {
+                repliesEl.appendChild(
+                    el(
+                        "p",
+                        "forum-empty",
+                        "Pas encore de réponse. Sois le premier !",
+                    ),
+                );
+            }
+            data.replies.forEach((reply) => {
+                const block = el("article", "forum-post");
+                postBlock(reply, block);
+                repliesEl.appendChild(block);
+            });
+        } catch (err) {
+            topicDetail.innerHTML = "";
+            topicDetail.appendChild(
+                el("p", "", err.message || "Impossible de charger ce sujet."),
+            );
+            if (replyForm) replyForm.classList.add("hidden");
+        }
+    }
+
+    // ===== ÉCRIRE =====
+
+    if (createForm) {
+        createForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            try {
+                const result = await postJson("?p=api/forum/create", {
+                    title: document.getElementById("topic-title").value,
+                    message: document.getElementById("topic-message").value,
+                });
+                location.href = `?p=forum&topic=${result.id}`; // on ouvre le sujet créé
+            } catch (err) {
+                showError("create-error", err.message);
+            }
+        });
+    }
+
+    if (replyForm) {
+        replyForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            try {
+                await postJson("?p=api/forum/reply", {
+                    topic_id: topicId,
+                    message: document.getElementById("reply-message").value,
+                });
+                document.getElementById("reply-message").value = "";
+                document.getElementById("reply-error").classList.add("hidden");
+                loadTopic();
+            } catch (err) {
+                showError("reply-error", err.message);
+            }
+        });
+    }
+
+    if (topicId) {
+        loadTopic();
+    } else {
+        loadTopics();
+    }
+});

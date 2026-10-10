@@ -1195,3 +1195,121 @@ tbody tr.me {
     background: rgba(255, 0, 0, 0.25);
     font-weight: bold;
 }
+
+/* =========================
+    FORUM
+========================= */
+
+.forum-create {
+    margin-bottom: 40px;
+}
+
+a.forum-topic {
+    display: block;
+    color: #eee;
+    text-decoration: none;
+}
+
+.forum-topic h3 {
+    font-size: 22px;
+    letter-spacing: 1px;
+}
+
+.forum-error {
+    background: rgba(166, 0, 0, 0.35);
+    border: 1px solid red;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.forum-error.hidden {
+    display: none;
+}
+
+.forum-login-hint {
+    text-align: center;
+    margin-bottom: 40px;
+    font-family: Arial, sans-serif;
+}
+
+.forum-empty {
+    text-align: center;
+    color: #aaa;
+    font-family: Arial, sans-serif;
+}
+
+.forum-back {
+    display: inline-block;
+    color: #ff4d4d;
+    text-decoration: none;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.forum-back:hover {
+    text-shadow: 0 0 8px red;
+}
+
+.forum-post {
+    background: rgba(40, 40, 40, 0.8);
+    border-left: 3px solid #a60000;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.forum-post-main {
+    border: 1px solid #a60000;
+    border-left-width: 3px;
+}
+
+.forum-post-main h1 {
+    font-size: 30px;
+    text-shadow: 0 0 6px red;
+    margin-bottom: 6px;
+}
+
+.forum-message {
+    margin-top: 10px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    white-space: pre-wrap; /* garde les retours à la ligne */
+    overflow-wrap: anywhere; /* coupe les mots très longs */
+}
+
+.forum-replies-title {
+    margin: 30px 0 15px;
+    text-shadow: 0 0 6px red;
+}
+
+.forum-reply-form {
+    margin-top: 25px;
+}
+
+#reply-message {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    background: #111;
+    border: 1px solid #a60000;
+    color: #fff;
+    border-radius: 4px;
+}
+
+#reply-btn {
+    background: #a60000;
+    color: #fff;
+    padding: 10px 24px;
+    border: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#reply-btn:hover {
+    background: red;
+    box-shadow: 0 0 12px red;
+}

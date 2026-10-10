@@ -65,6 +65,12 @@ class app
         self::$rooter->addRoute("api/logout", "monApp\controllers\api\authController@logout");
         self::$rooter->addRoute("api/me", "monApp\controllers\api\authController@me");
 
+        // Forum (guillemets simples : dans des guillemets doubles, \f serait un caractère spécial)
+        self::$rooter->addRoute('api/forum', 'monApp\controllers\api\forumController@listTopics');
+        self::$rooter->addRoute('api/forum/topic', 'monApp\controllers\api\forumController@getTopic');
+        self::$rooter->addRoute('api/forum/create', 'monApp\controllers\api\forumController@createTopic');
+        self::$rooter->addRoute('api/forum/reply', 'monApp\controllers\api\forumController@reply');
+
         tools::gets();
         $p = tools::get("p") ?? "";
 
