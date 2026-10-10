@@ -403,45 +403,35 @@ document.addEventListener("DOMContentLoaded", () => {
         difficile: 24, // 48 cartes
     };
 
+    // Nombre de colonnes idéal par difficulté (sur grand écran)
+    const columnsConfig = {
+        facile: 6,
+        moyen: 9,
+        difficile: 12,
+    };
+
+    let currentLevel = null;
+
     function applyDifficultyLayout(level) {
-        const grid = document.querySelector(".memory-grid");
-        const cards = document.querySelectorAll(".memory-card");
+        currentLevel = level;
 
-        let columns, gap, cardWidth, cardHeight;
+        const container = document.querySelector(".memory-container");
+        const available = container.clientWidth - 40; // place disponible (moins le padding)
+        const gap = window.innerWidth < 600 ? 8 : 18;
+        const minCard = 56; // une carte ne descend jamais sous 56 px de large
 
-        switch (level) {
-            case "facile":
-                columns = 6;
-                gap = "35px";
-                cardWidth = "90px";
-                cardHeight = "130px";
-                break;
+        // Autant de colonnes que prévu... mais pas plus que ce qui tient à l'écran
+        const maxColumns = Math.floor((available + gap) / (minCard + gap));
+        const columns = Math.max(3, Math.min(columnsConfig[level], maxColumns));
 
-            case "moyen":
-                columns = 9;
-                gap = "28px";
-                cardWidth = "90px";
-                cardHeight = "130px";
-                break;
-
-            case "difficile":
-                columns = 12;
-                gap = "22px";
-                cardWidth = "90px";
-                cardHeight = "130px";
-                break;
-        }
-
-        // Grid
-        grid.style.gridTemplateColumns = `repeat(${columns}, ${cardWidth})`;
-        grid.style.gap = gap;
-
-        // Cartes
-        cards.forEach((card) => {
-            card.style.width = cardWidth;
-            card.style.height = cardHeight;
-        });
+        grid.style.gridTemplateColumns = `repeat(${columns}, minmax(0, 90px))`;
+        grid.style.gap = `${gap}px`;
     }
+
+    // Si on tourne le téléphone ou qu'on redimensionne la fenêtre, on recalcule
+    window.addEventListener("resize", () => {
+        if (currentLevel) applyDifficultyLayout(currentLevel);
+    });
 
     // =========================
     // ÉCOUTEURS DIFFICULTÉ

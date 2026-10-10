@@ -8,8 +8,11 @@
 body {
     font-family: "Bebas Neue", sans-serif;
     height: 100vh;
+    min-height: 100vh;
+    background-color: #0b0b0b;
     background-image: url("../img/resident_evil_7.jpg");
     background-size: cover;
+    background-position: center;
     background-attachment: fixed;
     display: flex;
     flex-direction: column;
@@ -194,7 +197,8 @@ footer {
     backdrop-filter: blur(10px);
     box-shadow: 0 0 25px red;
     border-radius: 8px;
-    width: 350px;
+    width: min(350px, 90%);
+    position: relative;
     animation: modalFade 0.5s ease-out;
 }
 
@@ -300,7 +304,9 @@ footer {
     border: 2px solid #00ff88;
     border-radius: 50%;
     background: rgba(0, 15, 0, 0.85);
-    box-shadow: 0 0 16px rgba(0, 255, 140, 0.6), inset 0 0 12px #00ff88;
+    box-shadow:
+        0 0 16px rgba(0, 255, 140, 0.6),
+        inset 0 0 12px #00ff88;
 
     color: #fff;
     font-size: 18px;
@@ -475,11 +481,13 @@ footer {
 @keyframes bioPulse {
     0%,
     100% {
-        box-shadow: 0 0 12px rgba(0, 255, 150, 0.4),
+        box-shadow:
+            0 0 12px rgba(0, 255, 150, 0.4),
             inset 0 0 8px rgba(0, 255, 150, 0.4);
     }
     50% {
-        box-shadow: 0 0 18px rgba(0, 255, 150, 0.8),
+        box-shadow:
+            0 0 18px rgba(0, 255, 150, 0.8),
             inset 0 0 14px rgba(0, 255, 150, 0.6);
     }
 }
@@ -737,8 +745,10 @@ textarea {
     text-transform: uppercase;
     letter-spacing: 2px;
     border-radius: 4px;
-    box-shadow: inset 0 0 8px red, 0 0 10px rgba(255,0,0,.6);
-    transition: .3s;
+    box-shadow:
+        inset 0 0 8px red,
+        0 0 10px rgba(255, 0, 0, 0.6);
+    transition: 0.3s;
 }
 
 .memory-difficulty button:hover {
@@ -768,8 +778,8 @@ textarea {
 ========================= */
 
 .memory-card {
-    width: 80px;
-    height: 120px;
+    width: 100%;
+    aspect-ratio: 9 / 13;
     perspective: 1000px;
     cursor: pointer;
 }
@@ -830,9 +840,10 @@ textarea {
     transform: rotateY(180deg);
     background: rgba(0, 10, 0, 0.9);
     border: 1px solid #00ff88;
-    box-shadow: inset 0 0 16px rgba(0, 255, 140, 0.7),
+    box-shadow:
+        inset 0 0 16px rgba(0, 255, 140, 0.7),
         0 0 16px rgba(0, 255, 140, 0.6);
-        z-index: 1;
+    z-index: 1;
     backface-visibility: hidden;
 }
 
@@ -882,7 +893,9 @@ textarea {
 ========================= */
 
 .memory-card:hover .memory-card-front {
-    box-shadow: inset 0 0 18px rgba(255, 0, 0, 0.9), 0 0 20px red;
+    box-shadow:
+        inset 0 0 18px rgba(255, 0, 0, 0.9),
+        0 0 20px red;
 }
 
 .memory-card.is-flipped:hover .memory-card-front {
@@ -896,7 +909,7 @@ textarea {
 .memory-win {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.85);
+    background: rgba(0, 0, 0, 0.85);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -905,12 +918,12 @@ textarea {
 }
 
 .memory-win-box {
-    background: rgba(10,0,0,.95);
+    background: rgba(10, 0, 0, 0.95);
     border: 2px solid #a60000;
     padding: 40px;
     text-align: center;
     box-shadow: 0 0 40px red;
-    animation: winAppear .6s ease;
+    animation: winAppear 0.6s ease;
 }
 
 .memory-win-box h2 {
@@ -934,7 +947,7 @@ textarea {
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 1px;
-    transition: .3s;
+    transition: 0.3s;
 }
 
 .memory-win-actions button:hover {
@@ -944,11 +957,125 @@ textarea {
 
 @keyframes winAppear {
     from {
-        transform: scale(.7);
+        transform: scale(0.7);
         opacity: 0;
     }
     to {
         transform: scale(1);
         opacity: 1;
+    }
+}
+
+/* =========================
+    RESPONSIVE
+========================= */
+
+/* Tablettes et petits écrans */
+@media (max-width: 900px) {
+    .header-top {
+        width: 92%;
+    }
+
+    .header-top h1 {
+        font-size: 30px;
+    }
+
+    .left-logo img,
+    .right-logo img {
+        width: 56px;
+    }
+
+    nav ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px 18px;
+        padding: 0 10px;
+    }
+
+    nav ul li {
+        margin: 0;
+    }
+
+    nav ul li a,
+    #auth-nav {
+        font-size: 18px;
+    }
+
+    main,
+    .score-container,
+    .forum-container,
+    .contact-container {
+        width: 94%;
+        margin: 20px auto;
+    }
+
+    main {
+        padding: 10px;
+    }
+
+    article {
+        padding: 20px;
+    }
+
+    article h2 {
+        font-size: 24px;
+    }
+
+    article h3 {
+        font-size: 19px;
+    }
+
+    /* Horloges : 2 lignes de 3, sous le menu */
+    .clocks-container {
+        position: static;
+        flex-direction: column;
+        gap: 14px;
+        padding: 0 10px;
+    }
+
+    .clocks-left,
+    .clocks-right {
+        gap: 12px;
+    }
+
+    .clock-circle {
+        width: 76px;
+        height: 76px;
+        font-size: 14px;
+    }
+
+    .clock-label {
+        font-size: 14px;
+    }
+
+    .memory-difficulty {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    th,
+    td {
+        padding: 8px;
+        font-size: 16px;
+    }
+}
+
+/* Téléphones */
+@media (max-width: 480px) {
+    .header-top h1 {
+        font-size: 24px;
+    }
+
+    .left-logo,
+    .right-logo {
+        display: none;
+    }
+
+    .memory-container,
+    .score-container,
+    .forum-container,
+    .contact-container {
+        padding: 20px 12px;
     }
 }
