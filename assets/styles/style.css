@@ -1079,3 +1079,51 @@ textarea {
         padding: 20px 12px;
     }
 }
+
+/* =========================
+    COMPTES
+========================= */
+
+.auth-modal-content {
+    color: #fff;
+}
+
+.auth-modal h2 {
+    margin-bottom: 12px;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.auth-modal p {
+    margin-top: 14px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.auth-modal a {
+    color: #ff4d4d;
+}
+
+.auth-error {
+    background: rgba(166, 0, 0, 0.35);
+    border: 1px solid red;
+    padding: 8px 10px;
+    margin: 18px 0 6px;
+    color: #fff;
+}
+
+.auth-error.hidden {
+    display: none;
+}
+
+#auth-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.auth-pseudo {
+    color: #ff4d4d;
+    text-shadow: 0 0 8px red;
+}

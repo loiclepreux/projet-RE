@@ -1,15 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>projet RE</title>
-    <link rel="stylesheet" href="assets/styles/style.css">
-    <script src="assets/js/script.js" defer></script>
-</head>
-<body>
-
-<header>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>projet RE</title>
+        <link rel="stylesheet" href="assets/styles/style.css" />
+        <script src="assets/js/script.js" defer></script>
+    </head>
+    <body>
+        <header>
             <div class="header-top">
                 <div class="left-logo">
                     <img
@@ -40,36 +39,88 @@
                     <li><a href="?p=score">Score</a></li>
                     <li><a href="?p=forum">Forum</a></li>
                     <li><a href="?p=contact">Contact</a></li>
-                    <li id="auth-nav"><a href="#" id="open-login">Connexion</a></li>
+                    <?php if (!empty($_SESSION['user'])): ?>
+                    <li id="auth-nav">
+                        <span class="auth-pseudo"
+                            ><?= htmlspecialchars($_SESSION['user']['username']) ?></span
+                        >
+                        <a href="#" id="logout-btn">Déconnexion</a>
+                    </li>
+                    <?php else: ?>
+                    <li id="auth-nav">
+                        <a href="#" id="open-login">Connexion</a>
+                    </li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </header>
 
-        
-            <!-- MODALE OVERLAY -->
+        <!-- MODALE CONNEXION / INSCRIPTION -->
         <div id="auth-modal" class="auth-modal hidden">
-    <div class="auth-modal-content">
+            <div class="auth-modal-content">
+                <span class="close-modal" id="close-auth">&times;</span>
 
-        <span class="close-modal" id="close-auth">&times;</span>
+                <!-- Message d'erreur (pseudo déjà pris, mauvais mot de passe...) -->
+                <p id="auth-error" class="auth-error hidden"></p>
 
-        <!-- LOGIN -->
-        <div id="login-screen">
-            <h2>Connexion</h2>
-            <input type="email" id="login-email" placeholder="Email">
-            <input type="password" id="login-password" placeholder="Mot de passe">
-            <button id="login-btn">Se connecter</button>
-            <p>Pas encore inscrit ? <a href="#" id="go-register">Créer un compte</a></p>
+                <!-- CONNEXION -->
+                <form id="login-screen">
+                    <h2>Connexion</h2>
+                    <input
+                        type="email"
+                        id="login-email"
+                        placeholder="Email"
+                        autocomplete="email"
+                        required
+                    />
+                    <input
+                        type="password"
+                        id="login-password"
+                        placeholder="Mot de passe"
+                        autocomplete="current-password"
+                        required
+                    />
+                    <button type="submit">Se connecter</button>
+                    <p>
+                        Pas encore inscrit ?
+                        <a href="#" id="go-register">Créer un compte</a>
+                    </p>
+                </form>
+
+                <!-- INSCRIPTION -->
+                <form id="register-screen" class="hidden">
+                    <h2>Créer un compte</h2>
+                    <input
+                        type="email"
+                        id="register-email"
+                        placeholder="Email"
+                        autocomplete="email"
+                        required
+                    />
+                    <input
+                        type="text"
+                        id="register-pseudo"
+                        placeholder="Pseudo (3 à 30 caractères)"
+                        autocomplete="username"
+                        required
+                        minlength="3"
+                        maxlength="30"
+                    />
+                    <input
+                        type="password"
+                        id="register-password"
+                        placeholder="Mot de passe (8 caractères min.)"
+                        autocomplete="new-password"
+                        required
+                        minlength="8"
+                    />
+                    <button type="submit">S'inscrire</button>
+                    <p>
+                        Déjà inscrit ?
+                        <a href="#" id="go-login">Se connecter</a>
+                    </p>
+                </form>
+            </div>
         </div>
-
-        <!-- REGISTER -->
-        <div id="register-screen" class="hidden">
-            <h2>Créer un compte</h2>
-            <input type="email" id="register-email" placeholder="Email">
-            <input type="text" id="register-pseudo" placeholder="Pseudo">
-            <input type="password" id="register-password" placeholder="Mot de passe">
-            <button id="register-btn">S'inscrire</button>
-            <p>Déjà inscrit ? <a href="#" id="go-login">Se connecter</a></p>
-        </div>
-
-    </div>
-</div>
+    </body>
+</html>

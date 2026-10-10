@@ -57,6 +57,12 @@ class app
         self::$rooter->addRoute("404", "monApp\controllers\pages\page404Controller@index");
         self::$rooter->addRoute("api/score", "monApp\controllers\api\scoreController@saveScore");
 
+        // Comptes
+        self::$rooter->addRoute("api/register", "monApp\controllers\api\authController@register");
+        self::$rooter->addRoute("api/login", "monApp\controllers\api\authController@login");
+        self::$rooter->addRoute("api/logout", "monApp\controllers\api\authController@logout");
+        self::$rooter->addRoute("api/me", "monApp\controllers\api\authController@me");
+
         tools::gets();
         $p = tools::get("p") ?? "";
 
@@ -75,7 +81,6 @@ class app
 
         try {
             self::$html = self::$dispatcher->dispatch($route);
-
         } catch (\Throwable $e) {
 
             // log erreur

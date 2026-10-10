@@ -24,71 +24,97 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ======================================================
-// FORMULAIRE DE CONNEXION - MODAL
+// COMPTES : CONNEXION, INSCRIPTION, DÉCONNEXION
 // ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
     const authModal = document.getElementById("auth-modal");
-    const loginScreen = document.getElementById("login-screen");
-    const registerScreen = document.getElementById("register-screen");
-    const closeAuth = document.getElementById("close-auth");
-    const goRegister = document.getElementById("go-register");
-    const goLogin = document.getElementById("go-login");
-    const loginBtn = document.getElementById("login-btn");
-    // 🔓 OPEN LOGIN MODAL
-    document.addEventListener("click", (event) => {
-        const target = event.target;
-        if (target.id === "open-login") {
-            authModal.classList.remove("hidden");
-            loginScreen.classList.remove("hidden");
-            registerScreen.classList.add("hidden");
+    const loginForm = document.getElementById("login-screen");
+    const registerForm = document.getElementById("register-screen");
+    const authError = document.getElementById("auth-error");
+
+    // Envoie des données en JSON à notre API PHP et renvoie sa réponse
+    async function postJson(url, data) {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+        const result = await res.json().catch(() => ({}));
+        if (!res.ok || !result.success) {
+            throw new Error(result.error || "Une erreur est survenue.");
         }
-    });
-    // ❌ CLOSE MODAL
-    closeAuth.addEventListener("click", () => {
-        authModal.classList.add("hidden");
-    });
-    // ➡️ GO TO REGISTER
-    goRegister.addEventListener("click", (event) => {
-        event.preventDefault();
-        loginScreen.classList.add("hidden");
-        registerScreen.classList.remove("hidden");
-    });
-    // ➡️ GO TO LOGIN
-    goLogin.addEventListener("click", (event) => {
-        event.preventDefault();
-        loginScreen.classList.remove("hidden");
-        registerScreen.classList.add("hidden");
-    });
-    // 🚪 LOGOUT
-    document.addEventListener("click", (event) => {
-        const target = event.target;
-        if (target.id === "logout-btn") {
-            localStorage.removeItem("token");
-            localStorage.removeItem("pseudo");
+        return result;
+    }
+
+    function showError(message) {
+        authError.textContent = message;
+        authError.classList.remove("hidden");
+    }
+
+    function openModal(screen) {
+        authError.classList.add("hidden");
+        authModal.classList.remove("hidden");
+        loginForm.classList.toggle("hidden", screen !== "login");
+        registerForm.classList.toggle("hidden", screen !== "register");
+        authModal.querySelector(`#${screen}-screen input`).focus();
+    }
+
+    // D'autres scripts (quiz, forum) peuvent ouvrir la fenêtre de connexion
+    window.openAuthModal = openModal;
+
+    document.addEventListener("click", async (event) => {
+        const id = event.target.id;
+
+        if (id === "open-login" || id === "go-login") {
+            event.preventDefault();
+            openModal("login");
+        }
+        if (id === "go-register") {
+            event.preventDefault();
+            openModal("register");
+        }
+        // Clic sur la croix ou sur le fond noir autour de la fenêtre
+        if (id === "close-auth" || event.target === authModal) {
+            authModal.classList.add("hidden");
+        }
+        if (id === "logout-btn") {
+            event.preventDefault();
+            await postJson("?p=api/logout", {}).catch(() => {});
             location.reload();
         }
     });
-    // 🔑 LOGIN
-    loginBtn.addEventListener("click", async () => {
-        const emailInput = document.getElementById("login-email");
-        const passwordInput = document.getElementById("login-password");
-        const email = emailInput.value;
-        const password = passwordInput.value;
-        const res = await fetch("http://localhost:3000/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-        });
-        if (!res.ok) {
-            alert("Erreur de connexion");
-            return;
+
+    // Touche Échap = fermer la fenêtre
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") authModal.classList.add("hidden");
+    });
+
+    loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        try {
+            await postJson("?p=api/login", {
+                email: document.getElementById("login-email").value,
+                password: document.getElementById("login-password").value,
+            });
+            location.reload();
+        } catch (err) {
+            showError(err.message);
         }
-        const data = await res.json();
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("pseudo", data.pseudo);
-        authModal.classList.add("hidden");
-        location.reload();
+    });
+
+    registerForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        try {
+            await postJson("?p=api/register", {
+                email: document.getElementById("register-email").value,
+                username: document.getElementById("register-pseudo").value,
+                password: document.getElementById("register-password").value,
+            });
+            location.reload();
+        } catch (err) {
+            showError(err.message);
+        }
     });
 });
 
