@@ -47,7 +47,7 @@ Site fan autour de l'univers **Resident Evil** : un quiz chronométré, un jeu d
 
 ```bash
    git clone https://github.com/loiclepreux/projet-residentevil.git
-   cd projet-re
+   cd projet-residentevil
 ```
 
 2. Générer l'autoload :
