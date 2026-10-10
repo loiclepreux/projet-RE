@@ -1,13 +1,6 @@
-<?php
-
-namespace monApp\controllers\pages;
-
-class pageForumController
-{
     public function index()
     {
-        require "views/pages/forum.php";
+        ob_start();
+        require __DIR__ . '/../../views/pages/forum.php';
+        return ob_get_clean();
     }
-}
-
-?>

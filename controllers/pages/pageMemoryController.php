@@ -1,13 +1,6 @@
-<?php
-
-namespace monApp\controllers\pages;
-
-class pageMemoryController
-{
     public function index()
     {
-        require "views/pages/memory.php";
+        ob_start();
+        require __DIR__ . '/../../views/pages/memory.php';
+        return ob_get_clean();
     }
-}
-
-?>

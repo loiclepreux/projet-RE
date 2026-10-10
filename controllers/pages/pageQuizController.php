@@ -1,13 +1,6 @@
-<?php
-
-namespace monApp\controllers\pages;
-
-class pageQuizController
-{
     public function index()
     {
-        require "views/pages/quiz.php";
+        ob_start();
+        require __DIR__ . '/../../views/pages/quiz.php';
+        return ob_get_clean();
     }
-}
-
-?>
