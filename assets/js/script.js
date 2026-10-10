@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
             loadingVideo.play();
 
             const res = await fetch(
-                `/projet-RE/?p=api/quiz&difficulty=${selectedDifficulty}`,
+                `?p=api/quiz&difficulty=${selectedDifficulty}`,
             );
             const result = await res.json();
 
@@ -307,7 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // si pas connecté → on ne sauvegarde pas
             if (!userId) return;
 
-            await fetch("/projet-RE/?p=api/score", {
+            await fetch("?p=api/score", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -327,7 +327,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function endQuiz() {
         clearInterval(timer);
-        saveScore(); 
+        saveScore();
         quizMusic.pause();
         quizMusic.currentTime = 0;
         quizPlay.classList.add("hidden");
@@ -350,6 +350,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const playScreen = document.getElementById("memory-play");
     const movesEl = document.getElementById("memory-moves");
     const winScreen = document.getElementById("memory-win");
+    // On n'est pas sur la page Memory : on ne fait rien
+    if (!grid) return;
 
     let firstCard = null;
     let secondCard = null;
