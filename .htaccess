@@ -1,0 +1,23 @@
+# ==========================================================
+
+# Sécurité : seuls index.php et le dossier assets sont publics
+
+# ==========================================================
+
+# Pas de liste des fichiers quand on ouvre un dossier
+
+Options -Indexes
+
+# Fichiers cachés (.env, .git, .htaccess...) : introuvables
+
+# (sauf .well-known, utilisé par Hostinger pour le certificat HTTPS)
+
+RedirectMatch 404 /\.(?!well-known)
+
+# Le code PHP, les vues, la base et les dépendances : introuvables
+
+RedirectMatch 404 ^/(core|controllers|views|database|vendor)(/|$)
+
+# Fichiers de configuration du projet : introuvables
+
+RedirectMatch 404 ^/(composer\.(json|lock)|README\.md)$
