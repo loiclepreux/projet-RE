@@ -21,3 +21,16 @@ RedirectMatch 404 ^/(core|controllers|views|database|vendor)(/|$)
 # Fichiers de configuration du projet : introuvables
 
 RedirectMatch 404 ^/(composer\.(json|lock)|README\.md)$
+
+# Toujours en HTTPS
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# En-têtes de sécurité envoyés au navigateur
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
